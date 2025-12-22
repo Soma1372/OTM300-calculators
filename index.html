@@ -246,3 +246,28 @@
 </script>
 </body>
 </html>
+<div class="card">
+  <h2>Utilization</h2>
+  <p class="small">Formula: utilization = lambda / mu</p>
+
+  <div class="grid">
+    <div>
+      <label for="utilLambda">lambda (units per time)</label>
+      <input id="utilLambda" type="number" step="any" placeholder="e.g., 4">
+    </div>
+    <div>
+      <label for="utilMu">mu (units per time)</label>
+      <input id="utilMu" type="number" step="any" placeholder="e.g., 5">
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 12px;">
+    <button type="button" onclick="runUtil()">Compute</button>
+    <button type="button" onclick="resetUtil()">Reset</button>
+  </div>
+
+  <div style="margin-top: 12px;">
+    <div class="small">Result</div>
+    <div class="result" id="utilResult">-</div>
+  </div>
+</div>
