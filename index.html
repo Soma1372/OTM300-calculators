@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exam Calculators</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { margin-bottom: 8px; }
+    .note { color: #444; margin-top: 0; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 16px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+    button { padding: 10px 14px; border: 1px solid #aaa; border-radius: 8px; background: #f7f7f7; cursor: pointer; font-size: 16px; }
+    button:hover { background: #eee; }
+    .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+    .result { font-size: 18px; font-weight: 700; padding: 10px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; }
+    .small { font-size: 13px; color: #555; }
+    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Exam Calculators</h1>
+    <p class="note">This page does not store data. Refreshing resets values.</p>
+
+    <div class="card">
+      <h2>Simple Calculator</h2>
+      <div class="grid">
+        <div>
+          <label for="a">Number A</label>
+          <input id="a" type="number" step="any" placeholder="e.g., 12.5">
+        </div>
+        <div>
+          <label for="b">Number B</label>
+          <input id="b" type="number" step="any" placeholder="e.g., 3">
+        </div>
+      </div>
+      <div class="row" style="margin-top: 12px;">
+        <div>
+          <label for="op">Operation</label>
+          <select id="op">
+            <option value="add">A + B</option>
+            <option value="sub">A - B</option>
+            <option value="mul">A * B</option>
+            <option value="div">A / B</option>
+          </select>
+        </div>
+        <button type="button" onclick="runBasic()">Compute</button>
+        <button type="button" onclick="resetBasic()">Reset</button>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <div class="small">Result</div>
+        <div class="result" id="basicResult">-</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Little's Law</h2>
+      <p class="small">Formula: <strong>L = lambda * W</strong>, where L is average number in system, lambda is average flow rate, W is average time in system.</p>
+
+      <div class="row">
+        <div style="flex: 1; min-width: 250px;">
+          <label for="mode">What do you want to solve for?</label>
+          <select id="mode" onchange="updateLittleLabels()">
+            <option value="solveL">Solve for L (given lambda and W)</option>
+            <option value="solveW">Solve for W (given L and lambda)</option>
+            <option value="solvelambda">Solve for lambda (given L and W)</option>
+          </select>
+        </div>
+        <div style="flex: 1; min-width: 250px;">
+          <label for="round">Rounding</label>
+          <select id="round">
+            <option value="none">No rounding</option>
+            <option value="2">Round to 2 decimals</option>
+            <option value="3">Round to 3 decimals</option>
+            <option value="0">Round to whole number</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top: 12px;">
+        <div>
+          <label id="xLabel" for="xInput">lambda (units per time)</label>
+          <input id="xInput" type="number" step="any" placeholder="e.g., 4 (customers per hour)">
+        </div>
+        <div>
+          <label id="yLabel" for="yInput">W (time)</label>
+          <input id="yInput" type="number" step="any" placeholder="e.g., 0.5 (hours)">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 12px;">
+        <button type="button" onclick="runLittle()">Compute</button>
+        <button type="button" onclick="resetLittle()">Reset</button>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <div class="small">Result</div>
+        <div class="result" id="littleResult">-</div>
+      </div>
+
+      <p class="small" style="margin-top: 10px;">
+        Tip: Keep time units consistent. If lambda is customers per hour, W must be in hours.
+      </p>
+    </div>
+  </div>
+
+<script>
+  function parseNum(id) {
+    const v = document.getElementById(id).value;
+    if (v === "" || v === null) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function formatResult(value) {
+    const roundMode = document.getElementById("round") ? document.getElementById("round").value : "none";
+    if (roundMode === "none") return String(value);
+    const decimals = Number(roundMode);
+    if (!Number.isFinite(decimals)) return String(value);
+    return value.toFixed(decimals);
+  }
+
+  function runBasic() {
+    const a = parseNum("a");
+    const b = parseNum("b");
+    const op = document.getElementById("op").value;
+
+    if (a === null || b === null) {
+      document.getElementById("basicResult").textContent = "Enter values for A and B.";
+      return;
+    }
+
+    let out;
+    if (op === "add") out = a + b;
+    if (op === "sub") out = a - b;
+    if (op === "mul") out = a * b;
+    if (op === "div") {
+      if (b === 0) {
+        document.getElementById("basicResult").textContent = "Cannot divide by zero.";
+        return;
+      }
+      out = a / b;
+    }
+
+    document.getElementById("basicResult").textContent = out;
+  }
+
+  function resetBasic() {
+    document.getElementById("a").value = "";
+    document.getElementById("b").value = "";
+    document.getElementById("op").value = "add";
+    document.getElementById("basicResult").textContent = "-";
+  }
+
+  function updateLittleLabels() {
+    const mode = document.getElementById("mode").value;
+    const xLabel = document.getElementById("xLabel");
+    const yLabel = document.getElementById("yLabel");
+    const xInput = document.getElementById("xInput");
+    const yInput = document.getElementById("yInput");
+
+    xInput.value = "";
+    yInput.value = "";
+    document.getElementById("littleResult").textContent = "-";
+
+    if (mode === "solveL") {
+      xLabel.textContent = "lambda (units per time)";
+      yLabel.textContent = "W (time)";
+      xInput.placeholder = "e.g., 4 (customers per hour)";
+      yInput.placeholder = "e.g., 0.5 (hours)";
+    }
+
+    if (mode === "solveW") {
+      xLabel.textContent = "L (average number in system)";
+      yLabel.textContent = "lambda (units per time)";
+      xInput.placeholder = "e.g., 2 (customers)";
+      yInput.placeholder = "e.g., 4 (customers per hour)";
+    }
+
+    if (mode === "solvelambda") {
+      xLabel.textContent = "L (average number in system)";
+      yLabel.textContent = "W (time)";
+      xInput.placeholder = "e.g., 2 (customers)";
+      yInput.placeholder = "e.g., 0.5 (hours)";
+    }
+  }
+
+  function runLittle() {
+    const mode = document.getElementById("mode").value;
+    const x = parseNum("xInput");
+    const y = parseNum("yInput");
+
+    if (x === null || y === null) {
+      document.getElementById("littleResult").textContent = "Enter both inputs.";
+      return;
+    }
+
+    let out;
+
+    if (mode === "solveL") {
+      const lambda = x;
+      const W = y;
+      out = lambda * W;
+      document.getElementById("littleResult").textContent = "L = " + formatResult(out);
+      return;
+    }
+
+    if (mode === "solveW") {
+      const L = x;
+      const lambda = y;
+      if (lambda === 0) {
+        document.getElementById("littleResult").textContent = "lambda cannot be zero.";
+        return;
+      }
+      out = L / lambda;
+      document.getElementById("littleResult").textContent = "W = " + formatResult(out);
+      return;
+    }
+
+    if (mode === "solvelambda") {
+      const L = x;
+      const W = y;
+      if (W === 0) {
+        document.getElementById("littleResult").textContent = "W cannot be zero.";
+        return;
+      }
+      out = L / W;
+      document.getElementById("littleResult").textContent = "lambda = " + formatResult(out);
+      return;
+    }
+  }
+
+  function resetLittle() {
+    document.getElementById("mode").value = "solveL";
+    document.getElementById("round").value = "none";
+    updateLittleLabels();
+  }
+
+  // initialize labels on load
+  updateLittleLabels();
+</script>
+</body>
+</html>
