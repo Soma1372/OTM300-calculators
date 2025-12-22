@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Exam Calculators</title>
+  <title>OTM 300 Exam Calculators</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
     .container { max-width: 900px; margin: 0 auto; }
     h1 { margin-bottom: 8px; }
     .note { color: #444; margin-top: 0; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 16px 0; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     label { display: block; font-weight: 600; margin-bottom: 4px; }
     input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
@@ -18,98 +17,161 @@
     .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
     .result { font-size: 18px; font-weight: 700; padding: 10px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; }
     .small { font-size: 13px; color: #555; }
-    @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+    /* Dropdown (details/summary) styles */
+    details.calc {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin: 12px 0;
+      background: #fff;
+    }
+
+    details.calc > summary {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+      user-select: none;
+    }
+
+    details.calc > summary::-webkit-details-marker { display: none; }
+
+    details.calc > summary::before {
+      content: "▶";
+      display: inline-block;
+      width: 22px;
+      margin-right: 6px;
+      transform: translateY(-1px);
+    }
+
+    details.calc[open] > summary::before { content: "▼"; }
+
+    details.calc .content { padding: 0 16px 16px 16px; }
+
+    .section-title { margin: 10px 0 6px 0; }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Exam Calculators</h1>
+    <h1>OTM 300 Exam Calculators</h1>
     <p class="note">This page does not store data. Refreshing resets values.</p>
 
-    <div class="card">
-      <h2>Simple Calculator</h2>
-      <div class="grid">
-        <div>
-          <label for="a">Number A</label>
-          <input id="a" type="number" step="any" placeholder="e.g., 12.5">
-        </div>
-        <div>
-          <label for="b">Number B</label>
-          <input id="b" type="number" step="any" placeholder="e.g., 3">
-        </div>
-      </div>
-      <div class="row" style="margin-top: 12px;">
-        <div>
-          <label for="op">Operation</label>
-          <select id="op">
-            <option value="add">A + B</option>
-            <option value="sub">A - B</option>
-            <option value="mul">A * B</option>
-            <option value="div">A / B</option>
-          </select>
-        </div>
-        <button type="button" onclick="runBasic()">Compute</button>
-        <button type="button" onclick="resetBasic()">Reset</button>
-      </div>
-
-      <div style="margin-top: 12px;">
-        <div class="small">Result</div>
-        <div class="result" id="basicResult">-</div>
-      </div>
+    <div class="row" style="margin: 12px 0 18px 0;">
+      <button type="button" onclick="openAll()">Expand all</button>
+      <button type="button" onclick="closeAll()">Collapse all</button>
+      <button type="button" onclick="resetAll()">Reset all</button>
     </div>
 
-    <div class="card">
-      <h2>Little's Law</h2>
-      <p class="small">Formula: <strong>L = lambda * W</strong>, where L is average number in system, lambda is average flow rate, W is average time in system.</p>
-
-      <div class="row">
-        <div style="flex: 1; min-width: 250px;">
-          <label for="mode">What do you want to solve for?</label>
-          <select id="mode" onchange="updateLittleLabels()">
-            <option value="solveL">Solve for L (given lambda and W)</option>
-            <option value="solveW">Solve for W (given L and lambda)</option>
-            <option value="solvelambda">Solve for lambda (given L and W)</option>
-          </select>
+    <details class="calc" open>
+      <summary>Simple Calculator</summary>
+      <div class="content">
+        <div class="grid">
+          <div>
+            <label for="a">Number A</label>
+            <input id="a" type="number" step="any" placeholder="e.g., 12.5">
+          </div>
+          <div>
+            <label for="b">Number B</label>
+            <input id="b" type="number" step="any" placeholder="e.g., 3">
+          </div>
         </div>
-        <div style="flex: 1; min-width: 250px;">
-          <label for="round">Rounding</label>
-          <select id="round">
-            <option value="none">No rounding</option>
-            <option value="2">Round to 2 decimals</option>
-            <option value="3">Round to 3 decimals</option>
-            <option value="0">Round to whole number</option>
-          </select>
+
+        <div class="row" style="margin-top: 12px;">
+          <div style="min-width: 200px;">
+            <label for="op">Operation</label>
+            <select id="op">
+              <option value="add">A + B</option>
+              <option value="sub">A - B</option>
+              <option value="mul">A * B</option>
+              <option value="div">A / B</option>
+            </select>
+          </div>
+          <button type="button" onclick="runBasic()">Compute</button>
+          <button type="button" onclick="resetBasic()">Reset</button>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <div class="small">Result</div>
+          <div class="result" id="basicResult">-</div>
         </div>
       </div>
+    </details>
 
-      <div class="grid" style="margin-top: 12px;">
-        <div>
-          <label id="xLabel" for="xInput">lambda (units per time)</label>
-          <input id="xInput" type="number" step="any" placeholder="e.g., 4 (customers per hour)">
+    <details class="calc">
+      <summary>Little's Law</summary>
+      <div class="content">
+        <p class="small">
+          Formula: <strong>L = lambda * W</strong>,
+          where L is average number in system,
+          lambda is average flow rate,
+          W is average time in system.
+        </p>
+
+        <div class="row">
+          <div style="flex: 1; min-width: 260px;">
+            <label for="mode">What do you want to solve for?</label>
+            <select id="mode" onchange="updateLittleLabels()">
+              <option value="solveL">Solve for L (given lambda and W)</option>
+              <option value="solveW">Solve for W (given L and lambda)</option>
+              <option value="solvelambda">Solve for lambda (given L and W)</option>
+            </select>
+          </div>
+
+          <div style="flex: 1; min-width: 220px;">
+            <label for="round">Rounding</label>
+            <select id="round">
+              <option value="none">No rounding</option>
+              <option value="2">Round to 2 decimals</option>
+              <option value="3">Round to 3 decimals</option>
+              <option value="0">Round to whole number</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label id="yLabel" for="yInput">W (time)</label>
-          <input id="yInput" type="number" step="any" placeholder="e.g., 0.5 (hours)">
+
+        <div class="grid" style="margin-top: 12px;">
+          <div>
+            <label id="xLabel" for="xInput">lambda (units per time)</label>
+            <input id="xInput" type="number" step="any" placeholder="e.g., 4 (customers per hour)">
+          </div>
+          <div>
+            <label id="yLabel" for="yInput">W (time)</label>
+            <input id="yInput" type="number" step="any" placeholder="e.g., 0.5 (hours)">
+          </div>
         </div>
-      </div>
 
-      <div class="row" style="margin-top: 12px;">
-        <button type="button" onclick="runLittle()">Compute</button>
-        <button type="button" onclick="resetLittle()">Reset</button>
-      </div>
+        <div class="row" style="margin-top: 12px;">
+          <button type="button" onclick="runLittle()">Compute</button>
+          <button type="button" onclick="resetLittle()">Reset</button>
+        </div>
 
-      <div style="margin-top: 12px;">
-        <div class="small">Result</div>
-        <div class="result" id="littleResult">-</div>
-      </div>
+        <div style="margin-top: 12px;">
+          <div class="small">Result</div>
+          <div class="result" id="littleResult">-</div>
+        </div>
 
-      <p class="small" style="margin-top: 10px;">
-        Tip: Keep time units consistent. If lambda is customers per hour, W must be in hours.
-      </p>
-    </div>
+        <p class="small" style="margin-top: 10px;">
+          Tip: Keep time units consistent. If lambda is customers per hour, W must be in hours.
+        </p>
+      </div>
+    </details>
+
+    <!-- Add more calculators by duplicating a <details class="calc"> block -->
+    <!-- Example placeholder:
+    <details class="calc">
+      <summary>Utilization</summary>
+      <div class="content">
+        ...
+      </div>
+    </details>
+    -->
   </div>
 
 <script>
+  /* -------- Helpers -------- */
   function parseNum(id) {
     const v = document.getElementById(id).value;
     if (v === "" || v === null) return null;
@@ -118,13 +180,31 @@
   }
 
   function formatResult(value) {
-    const roundMode = document.getElementById("round") ? document.getElementById("round").value : "none";
+    const roundEl = document.getElementById("round");
+    const roundMode = roundEl ? roundEl.value : "none";
     if (roundMode === "none") return String(value);
+
     const decimals = Number(roundMode);
     if (!Number.isFinite(decimals)) return String(value);
+
     return value.toFixed(decimals);
   }
 
+  /* -------- Expand/Collapse Controls -------- */
+  function openAll() {
+    document.querySelectorAll("details.calc").forEach(d => d.open = true);
+  }
+
+  function closeAll() {
+    document.querySelectorAll("details.calc").forEach(d => d.open = false);
+  }
+
+  function resetAll() {
+    resetBasic();
+    resetLittle();
+  }
+
+  /* -------- Simple Calculator -------- */
   function runBasic() {
     const a = parseNum("a");
     const b = parseNum("b");
@@ -136,6 +216,7 @@
     }
 
     let out;
+
     if (op === "add") out = a + b;
     if (op === "sub") out = a - b;
     if (op === "mul") out = a * b;
@@ -157,8 +238,10 @@
     document.getElementById("basicResult").textContent = "-";
   }
 
+  /* -------- Little's Law -------- */
   function updateLittleLabels() {
     const mode = document.getElementById("mode").value;
+
     const xLabel = document.getElementById("xLabel");
     const yLabel = document.getElementById("yLabel");
     const xInput = document.getElementById("xInput");
@@ -241,33 +324,21 @@
     updateLittleLabels();
   }
 
-  // initialize labels on load
+  /* -------- Accordion behavior (only one open at a time) --------
+     If you want multiple dropdowns open at once, delete this block.
+  */
+  document.querySelectorAll("details.calc").forEach(d => {
+    d.addEventListener("toggle", () => {
+      if (d.open) {
+        document.querySelectorAll("details.calc").forEach(other => {
+          if (other !== d) other.open = false;
+        });
+      }
+    });
+  });
+
+  /* Initialize */
   updateLittleLabels();
 </script>
 </body>
 </html>
-<div class="card">
-  <h2>Utilization</h2>
-  <p class="small">Formula: utilization = lambda / mu</p>
-
-  <div class="grid">
-    <div>
-      <label for="utilLambda">lambda (units per time)</label>
-      <input id="utilLambda" type="number" step="any" placeholder="e.g., 4">
-    </div>
-    <div>
-      <label for="utilMu">mu (units per time)</label>
-      <input id="utilMu" type="number" step="any" placeholder="e.g., 5">
-    </div>
-  </div>
-
-  <div class="row" style="margin-top: 12px;">
-    <button type="button" onclick="runUtil()">Compute</button>
-    <button type="button" onclick="resetUtil()">Reset</button>
-  </div>
-
-  <div style="margin-top: 12px;">
-    <div class="small">Result</div>
-    <div class="result" id="utilResult">-</div>
-  </div>
-</div>
