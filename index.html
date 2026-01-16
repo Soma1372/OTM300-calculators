@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OTM 300 Exam Calculators</title>
+  <title>OTM 300 Calculators © 2025 Amir Fard Bahreini. All rights reserved.</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
     .container { max-width: 900px; margin: 0 auto; }
@@ -18,7 +18,6 @@
     .result { font-size: 18px; font-weight: 700; padding: 10px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; }
     .small { font-size: 13px; color: #555; }
 
-    /* Dropdown (details/summary) styles */
     details.calc {
       border: 1px solid #ddd;
       border-radius: 10px;
@@ -50,7 +49,6 @@
 
     .section-title { margin: 12px 0 6px 0; }
 
-    /* Input with unit selector */
     .input-with-unit {
       display: grid;
       grid-template-columns: 1fr 180px;
@@ -146,6 +144,12 @@
               <option value="0">Round to whole number</option>
             </select>
           </div>
+
+          <!-- Output unit control (changes based on solve mode) -->
+          <div id="outUnitWrap" style="flex: 1; min-width: 240px; display:none;">
+            <label id="outUnitLabel" for="outUnit">Output units</label>
+            <select id="outUnit"></select>
+          </div>
         </div>
 
         <div class="grid" style="margin-top: 12px;">
@@ -214,27 +218,30 @@
     return value.toFixed(decimals);
   }
 
-  function setText(id, txt) {
-    document.getElementById(id).textContent = txt;
-  }
-
-  function clearText(id) {
-    document.getElementById(id).textContent = "";
-  }
+  function setText(id, txt) { document.getElementById(id).textContent = txt; }
+  function clearText(id) { document.getElementById(id).textContent = ""; }
 
   function isNonNegative(n) {
     return typeof n === "number" && Number.isFinite(n) && n >= 0;
+  }
+
+  function fillSelect(selectEl, options) {
+    selectEl.innerHTML = "";
+    for (const opt of options) {
+      const o = document.createElement("option");
+      o.value = opt.value;
+      o.textContent = opt.label;
+      selectEl.appendChild(o);
+    }
   }
 
   /* -------- Expand/Collapse Controls -------- */
   function openAll() {
     document.querySelectorAll("details.calc").forEach(d => d.open = true);
   }
-
   function closeAll() {
     document.querySelectorAll("details.calc").forEach(d => d.open = false);
   }
-
   function resetAll() {
     resetBasic();
     resetLittle();
@@ -252,18 +259,13 @@
     }
 
     let out;
-
     if (op === "add") out = a + b;
     if (op === "sub") out = a - b;
     if (op === "mul") out = a * b;
     if (op === "div") {
-      if (b === 0) {
-        setText("basicResult", "Cannot divide by zero.");
-        return;
-      }
+      if (b === 0) { setText("basicResult", "Cannot divide by zero."); return; }
       out = a / b;
     }
-
     setText("basicResult", out);
   }
 
@@ -284,7 +286,7 @@
     "days": 24
   };
 
-  // For rates, we store as "per <time unit>" and convert to per hour.
+  // Convert a rate "per X" into "per hour"
   const RATE_TO_PER_HOUR = {
     "per second": 3600,
     "per minute": 60,
@@ -292,18 +294,7 @@
     "per day": 1 / 24
   };
 
-  function fillSelect(selectEl, options) {
-    selectEl.innerHTML = "";
-    for (const opt of options) {
-      const o = document.createElement("option");
-      o.value = opt.value;
-      o.textContent = opt.label;
-      selectEl.appendChild(o);
-    }
-  }
-
   function setUnitModeForSolveI() {
-    // Inputs: R (rate) and T (time)
     const xUnit = document.getElementById("xUnit");
     const yUnit = document.getElementById("yUnit");
 
@@ -314,12 +305,12 @@
     ]);
 
     fillSelect(yUnit, [
+      { value: "seconds", label: "seconds" },
       { value: "minutes", label: "minutes" },
       { value: "hours", label: "hours" },
       { value: "days", label: "days" }
     ]);
 
-    // sensible defaults
     xUnit.value = "per hour";
     yUnit.value = "hours";
 
@@ -328,7 +319,6 @@
   }
 
   function setUnitModeForSolveT() {
-    // Inputs: I (inventory) and R (rate)
     const xUnit = document.getElementById("xUnit");
     const yUnit = document.getElementById("yUnit");
 
@@ -350,7 +340,6 @@
   }
 
   function setUnitModeForSolveR() {
-    // Inputs: I (inventory) and T (time)
     const xUnit = document.getElementById("xUnit");
     const yUnit = document.getElementById("yUnit");
 
@@ -359,6 +348,7 @@
     ]);
 
     fillSelect(yUnit, [
+      { value: "seconds", label: "seconds" },
       { value: "minutes", label: "minutes" },
       { value: "hours", label: "hours" },
       { value: "days", label: "days" }
@@ -369,6 +359,43 @@
 
     document.getElementById("xUnitLabel").textContent = "Inventory units";
     document.getElementById("yUnitLabel").textContent = "Time units";
+  }
+
+  function setOutputUnitMode(mode) {
+    const wrap = document.getElementById("outUnitWrap");
+    const outUnitLabel = document.getElementById("outUnitLabel");
+    const outUnit = document.getElementById("outUnit");
+
+    if (mode === "solveI") {
+      wrap.style.display = "none";
+      outUnit.innerHTML = "";
+      return;
+    }
+
+    wrap.style.display = "block";
+
+    if (mode === "solveT") {
+      outUnitLabel.textContent = "Output time units";
+      fillSelect(outUnit, [
+        { value: "seconds", label: "seconds" },
+        { value: "minutes", label: "minutes" },
+        { value: "hours", label: "hours" },
+        { value: "days", label: "days" }
+      ]);
+      outUnit.value = "hours";
+      return;
+    }
+
+    if (mode === "solveR") {
+      outUnitLabel.textContent = "Output rate units";
+      fillSelect(outUnit, [
+        { value: "per minute", label: "flow units per minute" },
+        { value: "per hour", label: "flow units per hour" },
+        { value: "per day", label: "flow units per day" }
+      ]);
+      outUnit.value = "per hour";
+      return;
+    }
   }
 
   function updateLittleUI() {
@@ -383,6 +410,8 @@
     yInput.value = "";
     setText("littleResult", "-");
     clearText("littleConversions");
+
+    setOutputUnitMode(mode);
 
     if (mode === "solveI") {
       xLabel.textContent = "Flow rate, R";
@@ -428,20 +457,17 @@
 
     const xUnit = document.getElementById("xUnit").value;
     const yUnit = document.getElementById("yUnit").value;
+    const outUnit = document.getElementById("outUnit").value;
 
-    // Preferred display units for outputs
-    // For T output: time unit dropdown (we'll use a sensible default based on current context)
-    // For R output: rate unit dropdown
-    let out, conversionsNote = "";
+    let conversionsNote = "";
 
     if (mode === "solveI") {
-      // Inputs: R (rate) and T (time)
       const R_per_hour = x * (RATE_TO_PER_HOUR[xUnit] ?? 1);
       const T_hours = y * (TIME_TO_HOURS[yUnit] ?? 1);
 
-      out = R_per_hour * T_hours; // flow units
+      const I = R_per_hour * T_hours;
 
-      const shown = formatResult(out, "roundLittle");
+      const shown = formatResult(I, "roundLittle");
       setText("littleResult", "I = " + shown + " flow units");
       conversionsNote = `Converted to base units: R = ${R_per_hour} flow units/hour, T = ${T_hours} hours.`;
       setText("littleConversions", conversionsNote);
@@ -449,7 +475,6 @@
     }
 
     if (mode === "solveT") {
-      // Inputs: I (flow units) and R (rate)
       const I = x;
       const R_per_hour = y * (RATE_TO_PER_HOUR[yUnit] ?? 1);
 
@@ -461,22 +486,17 @@
 
       const T_hours = I / R_per_hour;
 
-      // Choose a display time unit (simple rule: if hours < 1, show minutes; else hours)
-      // Students can still control inputs via dropdown; this is only for output readability.
-      let displayUnit = "hours";
-      if (T_hours < 1) displayUnit = "minutes";
-      if (T_hours >= 24) displayUnit = "days";
+      const factor = TIME_TO_HOURS[outUnit] ?? 1; // outUnit is time unit
+      const T_out = T_hours / factor;
 
-      const T_display = T_hours / (TIME_TO_HOURS[displayUnit] ?? 1);
-      const shown = formatResult(T_display, "roundLittle");
-      setText("littleResult", "T = " + shown + " " + displayUnit);
+      const shown = formatResult(T_out, "roundLittle");
+      setText("littleResult", "T = " + shown + " " + outUnit);
       conversionsNote = `Converted to base units: R = ${R_per_hour} flow units/hour, so T = ${T_hours} hours.`;
       setText("littleConversions", conversionsNote);
       return;
     }
 
     if (mode === "solveR") {
-      // Inputs: I (flow units) and T (time)
       const I = x;
       const T_hours = y * (TIME_TO_HOURS[yUnit] ?? 1);
 
@@ -488,19 +508,15 @@
 
       const R_per_hour = I / T_hours;
 
-      // Choose a display rate unit (simple rule: default per hour; if small, per minute; if huge timeframe, per day)
-      let displayRateUnit = "per hour";
-      if (R_per_hour < 1) displayRateUnit = "per minute";
-      if (R_per_hour > 24 * 10) displayRateUnit = "per day"; // coarse heuristic
+      // outUnit is a rate unit ("per minute", "per hour", "per day")
+      const perHourFactor = RATE_TO_PER_HOUR[outUnit] ?? 1; // converts outUnit -> per hour
+      const R_out = R_per_hour / perHourFactor;
 
-      const factor = RATE_TO_PER_HOUR[displayRateUnit] ?? 1; // per hour conversion factor
-      const R_display = R_per_hour / factor;
+      let label = "flow units/hour";
+      if (outUnit === "per minute") label = "flow units/minute";
+      if (outUnit === "per day") label = "flow units/day";
 
-      const shown = formatResult(R_display, "roundLittle");
-      const label = (displayRateUnit === "per minute") ? "flow units/minute"
-                 : (displayRateUnit === "per day") ? "flow units/day"
-                 : "flow units/hour";
-
+      const shown = formatResult(R_out, "roundLittle");
       setText("littleResult", "R = " + shown + " " + label);
       conversionsNote = `Converted to base units: T = ${T_hours} hours, so R = ${R_per_hour} flow units/hour.`;
       setText("littleConversions", conversionsNote);
@@ -514,9 +530,7 @@
     updateLittleUI();
   }
 
-  /* -------- Accordion behavior (only one open at a time) --------
-     If you want multiple dropdowns open at once, delete this block.
-  */
+  /* -------- Accordion behavior (only one open at a time) -------- */
   document.querySelectorAll("details.calc").forEach(d => {
     d.addEventListener("toggle", () => {
       if (d.open) {
