@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OTM 300 Calculators © 2025 Amir Fard Bahreini. All rights reserved.</title>
+  <title>OTM 300 Calculators</title>
+
+  <!-- Optional metadata (nice to have, not required) -->
+  <meta name="copyright" content="© 2025 Amir. All rights reserved.">
+  <meta name="description" content="OTM 300 Exam Calculators (Little's Law and basic arithmetic).">
+
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
     .container { max-width: 900px; margin: 0 auto; }
@@ -60,15 +65,25 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
+    .footer {
+      margin-top: 22px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+      color: #666;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .input-with-unit { grid-template-columns: 1fr; }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
-    <h1>OTM 300 Exam Calculators</h1>
+    <h1>OTM 300 Calculators</h1>
     <p class="note">This page does not store data. Refreshing resets values.</p>
 
     <div class="row" style="margin: 12px 0 18px 0;">
@@ -77,37 +92,52 @@
       <button type="button" onclick="resetAll()">Reset all</button>
     </div>
 
+    <!-- Replaces your old Simple Calculator with an exam-safe general calculator -->
     <details class="calc" open>
-      <summary>Simple Calculator</summary>
+      <summary>General Calculator (Exam-Safe)</summary>
       <div class="content">
-        <div class="grid">
-          <div>
-            <label for="a">Number A</label>
-            <input id="a" type="number" step="any" placeholder="e.g., 12.5">
-          </div>
-          <div>
-            <label for="b">Number B</label>
-            <input id="b" type="number" step="any" placeholder="e.g., 3">
-          </div>
-        </div>
+        <p class="small">Basic arithmetic only: + − × ÷, parentheses, decimals.</p>
 
-        <div class="row" style="margin-top: 12px;">
-          <div style="min-width: 200px;">
-            <label for="op">Operation</label>
-            <select id="op">
-              <option value="add">A + B</option>
-              <option value="sub">A - B</option>
-              <option value="mul">A × B</option>
-              <option value="div">A ÷ B</option>
-            </select>
-          </div>
-          <button type="button" onclick="runBasic()">Compute</button>
-          <button type="button" onclick="resetBasic()">Reset</button>
-        </div>
+        <div style="max-width: 520px;">
+          <label for="expr">Expression</label>
+          <input id="expr" type="text" inputmode="decimal" placeholder="e.g., (12.5 + 3) / 4" />
 
-        <div style="margin-top: 12px;">
-          <div class="small">Result</div>
-          <div class="result" id="basicResult">-</div>
+          <div class="row" style="margin-top: 10px;">
+            <button type="button" onclick="appendExpr('(')">(</button>
+            <button type="button" onclick="appendExpr(')')">)</button>
+            <button type="button" onclick="appendExpr('%')">%</button>
+            <button type="button" onclick="backspaceExpr()">⌫</button>
+            <button type="button" onclick="clearExpr()">AC</button>
+          </div>
+
+          <div class="grid" style="margin-top: 10px; grid-template-columns: repeat(4, 1fr);">
+            <button type="button" onclick="appendExpr('7')">7</button>
+            <button type="button" onclick="appendExpr('8')">8</button>
+            <button type="button" onclick="appendExpr('9')">9</button>
+            <button type="button" onclick="appendExpr('/')">÷</button>
+
+            <button type="button" onclick="appendExpr('4')">4</button>
+            <button type="button" onclick="appendExpr('5')">5</button>
+            <button type="button" onclick="appendExpr('6')">6</button>
+            <button type="button" onclick="appendExpr('*')">×</button>
+
+            <button type="button" onclick="appendExpr('1')">1</button>
+            <button type="button" onclick="appendExpr('2')">2</button>
+            <button type="button" onclick="appendExpr('3')">3</button>
+            <button type="button" onclick="appendExpr('-')">−</button>
+
+            <button type="button" onclick="appendExpr('0')">0</button>
+            <button type="button" onclick="appendExpr('.')">.</button>
+            <button type="button" onclick="computeExpr()" style="font-weight:700;">=</button>
+            <button type="button" onclick="appendExpr('+')">+</button>
+          </div>
+
+          <div style="margin-top: 12px;">
+            <div class="small">Result</div>
+            <div class="result" id="exprResult">-</div>
+          </div>
+
+          <p class="small" style="margin-top: 10px;">Tip: You can also type directly and press Enter.</p>
         </div>
       </div>
     </details>
@@ -145,7 +175,6 @@
             </select>
           </div>
 
-          <!-- Output unit control (changes based on solve mode) -->
           <div id="outUnitWrap" style="flex: 1; min-width: 240px; display:none;">
             <label id="outUnitLabel" for="outUnit">Output units</label>
             <select id="outUnit"></select>
@@ -196,6 +225,12 @@
         </p>
       </div>
     </details>
+
+    <!-- Visible footer copyright notice -->
+    <div class="footer">
+      <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
+      <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
+    </div>
   </div>
 
 <script>
@@ -243,38 +278,65 @@
     document.querySelectorAll("details.calc").forEach(d => d.open = false);
   }
   function resetAll() {
-    resetBasic();
+    clearExpr();
     resetLittle();
   }
 
-  /* -------- Simple Calculator -------- */
-  function runBasic() {
-    const a = parseNum("a");
-    const b = parseNum("b");
-    const op = document.getElementById("op").value;
+  /* -------- General Calculator (Exam-Safe) -------- */
+  function appendExpr(s) {
+    const el = document.getElementById("expr");
+    el.value = (el.value || "") + s;
+    el.focus();
+  }
 
-    if (a === null || b === null) {
-      setText("basicResult", "Enter values for A and B.");
+  function backspaceExpr() {
+    const el = document.getElementById("expr");
+    el.value = (el.value || "").slice(0, -1);
+    el.focus();
+  }
+
+  function clearExpr() {
+    document.getElementById("expr").value = "";
+    document.getElementById("exprResult").textContent = "-";
+  }
+
+  function computeExpr() {
+    const raw = (document.getElementById("expr").value || "").trim();
+    if (!raw) {
+      document.getElementById("exprResult").textContent = "Enter an expression.";
       return;
     }
 
-    let out;
-    if (op === "add") out = a + b;
-    if (op === "sub") out = a - b;
-    if (op === "mul") out = a * b;
-    if (op === "div") {
-      if (b === 0) { setText("basicResult", "Cannot divide by zero."); return; }
-      out = a / b;
+    // Only allow digits, whitespace, decimal points, parentheses, + - * / and %
+    if (!/^[0-9+\-*/().%\s]+$/.test(raw)) {
+      document.getElementById("exprResult").textContent = "Invalid characters.";
+      return;
     }
-    setText("basicResult", out);
+
+    // Simple percent handling: "x%" -> "(x/100)"
+    const transformed = raw.replace(/(\d+(\.\d+)?)\s*%/g, "($1/100)");
+
+    try {
+      // Safe-ish evaluation due to strict character whitelist above
+      // eslint-disable-next-line no-new-func
+      const val = Function(`"use strict"; return (${transformed});`)();
+      if (!Number.isFinite(val)) {
+        document.getElementById("exprResult").textContent = "Result undefined.";
+        return;
+      }
+      document.getElementById("exprResult").textContent = String(val);
+    } catch (e) {
+      document.getElementById("exprResult").textContent = "Check your expression.";
+    }
   }
 
-  function resetBasic() {
-    document.getElementById("a").value = "";
-    document.getElementById("b").value = "";
-    document.getElementById("op").value = "add";
-    setText("basicResult", "-");
-  }
+  document.addEventListener("keydown", (e) => {
+    const active = document.activeElement;
+    if (active && active.id === "expr" && e.key === "Enter") {
+      e.preventDefault();
+      computeExpr();
+    }
+  });
 
   /* -------- Little’s Law (I = R * T) with unit conversion -------- */
 
@@ -486,7 +548,7 @@
 
       const T_hours = I / R_per_hour;
 
-      const factor = TIME_TO_HOURS[outUnit] ?? 1; // outUnit is time unit
+      const factor = TIME_TO_HOURS[outUnit] ?? 1;
       const T_out = T_hours / factor;
 
       const shown = formatResult(T_out, "roundLittle");
@@ -508,8 +570,7 @@
 
       const R_per_hour = I / T_hours;
 
-      // outUnit is a rate unit ("per minute", "per hour", "per day")
-      const perHourFactor = RATE_TO_PER_HOUR[outUnit] ?? 1; // converts outUnit -> per hour
+      const perHourFactor = RATE_TO_PER_HOUR[outUnit] ?? 1;
       const R_out = R_per_hour / perHourFactor;
 
       let label = "flow units/hour";
