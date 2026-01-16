@@ -48,10 +48,23 @@
 
     details.calc .content { padding: 0 16px 16px 16px; }
 
-    .section-title { margin: 10px 0 6px 0; }
+    .section-title { margin: 12px 0 6px 0; }
+
+    /* Input with unit selector */
+    .input-with-unit {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
 
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
+      .input-with-unit { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -86,8 +99,8 @@
             <select id="op">
               <option value="add">A + B</option>
               <option value="sub">A - B</option>
-              <option value="mul">A * B</option>
-              <option value="div">A / B</option>
+              <option value="mul">A × B</option>
+              <option value="div">A ÷ B</option>
             </select>
           </div>
           <button type="button" onclick="runBasic()">Compute</button>
@@ -102,28 +115,31 @@
     </details>
 
     <details class="calc">
-      <summary>Little's Law</summary>
+      <summary>2. Intro to Operations</summary>
       <div class="content">
+        <h3 class="section-title">Little’s Law</h3>
+
         <p class="small">
-          Formula: <strong>L = lambda * W</strong>,
-          where L is average number in system,
-          lambda is average flow rate,
-          W is average time in system.
+          Formula: <strong class="mono">I = R × T</strong>,
+          where <strong>I</strong> is average inventory (flow units),
+          <strong>R</strong> is average flow rate (flow units per time),
+          and <strong>T</strong> is average flow time (time).
+          Little’s Law describes <em>average</em> values.
         </p>
 
         <div class="row">
-          <div style="flex: 1; min-width: 260px;">
-            <label for="mode">What do you want to solve for?</label>
-            <select id="mode" onchange="updateLittleLabels()">
-              <option value="solveL">Solve for L (given lambda and W)</option>
-              <option value="solveW">Solve for W (given L and lambda)</option>
-              <option value="solvelambda">Solve for lambda (given L and W)</option>
+          <div style="flex: 1; min-width: 320px;">
+            <label for="modeLittle">What do you want to solve for?</label>
+            <select id="modeLittle" onchange="updateLittleUI()">
+              <option value="solveI">Solve for I (given R and T)</option>
+              <option value="solveT">Solve for T (given I and R)</option>
+              <option value="solveR">Solve for R (given I and T)</option>
             </select>
           </div>
 
           <div style="flex: 1; min-width: 220px;">
-            <label for="round">Rounding</label>
-            <select id="round">
+            <label for="roundLittle">Rounding</label>
+            <select id="roundLittle">
               <option value="none">No rounding</option>
               <option value="2">Round to 2 decimals</option>
               <option value="3">Round to 3 decimals</option>
@@ -134,12 +150,29 @@
 
         <div class="grid" style="margin-top: 12px;">
           <div>
-            <label id="xLabel" for="xInput">lambda (units per time)</label>
-            <input id="xInput" type="number" step="any" placeholder="e.g., 4 (customers per hour)">
+            <div class="input-with-unit">
+              <div>
+                <label id="xLabel" for="xInput">Flow rate, R</label>
+                <input id="xInput" type="number" step="any" placeholder="e.g., 4">
+              </div>
+              <div>
+                <label id="xUnitLabel" for="xUnit">Units</label>
+                <select id="xUnit"></select>
+              </div>
+            </div>
           </div>
+
           <div>
-            <label id="yLabel" for="yInput">W (time)</label>
-            <input id="yInput" type="number" step="any" placeholder="e.g., 0.5 (hours)">
+            <div class="input-with-unit">
+              <div>
+                <label id="yLabel" for="yInput">Flow time, T</label>
+                <input id="yInput" type="number" step="any" placeholder="e.g., 30">
+              </div>
+              <div>
+                <label id="yUnitLabel" for="yUnit">Units</label>
+                <select id="yUnit"></select>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -151,23 +184,14 @@
         <div style="margin-top: 12px;">
           <div class="small">Result</div>
           <div class="result" id="littleResult">-</div>
+          <div class="small" id="littleConversions" style="margin-top: 6px;"></div>
         </div>
 
         <p class="small" style="margin-top: 10px;">
-          Tip: Keep time units consistent. If lambda is customers per hour, W must be in hours.
+          Tip: Use the unit dropdowns so the calculator handles time conversions.
         </p>
       </div>
     </details>
-
-    <!-- Add more calculators by duplicating a <details class="calc"> block -->
-    <!-- Example placeholder:
-    <details class="calc">
-      <summary>Utilization</summary>
-      <div class="content">
-        ...
-      </div>
-    </details>
-    -->
   </div>
 
 <script>
@@ -179,8 +203,8 @@
     return Number.isFinite(n) ? n : null;
   }
 
-  function formatResult(value) {
-    const roundEl = document.getElementById("round");
+  function formatResult(value, roundSelectId) {
+    const roundEl = document.getElementById(roundSelectId);
     const roundMode = roundEl ? roundEl.value : "none";
     if (roundMode === "none") return String(value);
 
@@ -188,6 +212,18 @@
     if (!Number.isFinite(decimals)) return String(value);
 
     return value.toFixed(decimals);
+  }
+
+  function setText(id, txt) {
+    document.getElementById(id).textContent = txt;
+  }
+
+  function clearText(id) {
+    document.getElementById(id).textContent = "";
+  }
+
+  function isNonNegative(n) {
+    return typeof n === "number" && Number.isFinite(n) && n >= 0;
   }
 
   /* -------- Expand/Collapse Controls -------- */
@@ -211,7 +247,7 @@
     const op = document.getElementById("op").value;
 
     if (a === null || b === null) {
-      document.getElementById("basicResult").textContent = "Enter values for A and B.";
+      setText("basicResult", "Enter values for A and B.");
       return;
     }
 
@@ -222,25 +258,121 @@
     if (op === "mul") out = a * b;
     if (op === "div") {
       if (b === 0) {
-        document.getElementById("basicResult").textContent = "Cannot divide by zero.";
+        setText("basicResult", "Cannot divide by zero.");
         return;
       }
       out = a / b;
     }
 
-    document.getElementById("basicResult").textContent = out;
+    setText("basicResult", out);
   }
 
   function resetBasic() {
     document.getElementById("a").value = "";
     document.getElementById("b").value = "";
     document.getElementById("op").value = "add";
-    document.getElementById("basicResult").textContent = "-";
+    setText("basicResult", "-");
   }
 
-  /* -------- Little's Law -------- */
-  function updateLittleLabels() {
-    const mode = document.getElementById("mode").value;
+  /* -------- Little’s Law (I = R * T) with unit conversion -------- */
+
+  // Base time unit: hour
+  const TIME_TO_HOURS = {
+    "seconds": 1 / 3600,
+    "minutes": 1 / 60,
+    "hours": 1,
+    "days": 24
+  };
+
+  // For rates, we store as "per <time unit>" and convert to per hour.
+  const RATE_TO_PER_HOUR = {
+    "per second": 3600,
+    "per minute": 60,
+    "per hour": 1,
+    "per day": 1 / 24
+  };
+
+  function fillSelect(selectEl, options) {
+    selectEl.innerHTML = "";
+    for (const opt of options) {
+      const o = document.createElement("option");
+      o.value = opt.value;
+      o.textContent = opt.label;
+      selectEl.appendChild(o);
+    }
+  }
+
+  function setUnitModeForSolveI() {
+    // Inputs: R (rate) and T (time)
+    const xUnit = document.getElementById("xUnit");
+    const yUnit = document.getElementById("yUnit");
+
+    fillSelect(xUnit, [
+      { value: "per hour", label: "flow units per hour" },
+      { value: "per minute", label: "flow units per minute" },
+      { value: "per day", label: "flow units per day" }
+    ]);
+
+    fillSelect(yUnit, [
+      { value: "minutes", label: "minutes" },
+      { value: "hours", label: "hours" },
+      { value: "days", label: "days" }
+    ]);
+
+    // sensible defaults
+    xUnit.value = "per hour";
+    yUnit.value = "hours";
+
+    document.getElementById("xUnitLabel").textContent = "Rate units";
+    document.getElementById("yUnitLabel").textContent = "Time units";
+  }
+
+  function setUnitModeForSolveT() {
+    // Inputs: I (inventory) and R (rate)
+    const xUnit = document.getElementById("xUnit");
+    const yUnit = document.getElementById("yUnit");
+
+    fillSelect(xUnit, [
+      { value: "flow units", label: "flow units" }
+    ]);
+
+    fillSelect(yUnit, [
+      { value: "per hour", label: "flow units per hour" },
+      { value: "per minute", label: "flow units per minute" },
+      { value: "per day", label: "flow units per day" }
+    ]);
+
+    xUnit.value = "flow units";
+    yUnit.value = "per hour";
+
+    document.getElementById("xUnitLabel").textContent = "Inventory units";
+    document.getElementById("yUnitLabel").textContent = "Rate units";
+  }
+
+  function setUnitModeForSolveR() {
+    // Inputs: I (inventory) and T (time)
+    const xUnit = document.getElementById("xUnit");
+    const yUnit = document.getElementById("yUnit");
+
+    fillSelect(xUnit, [
+      { value: "flow units", label: "flow units" }
+    ]);
+
+    fillSelect(yUnit, [
+      { value: "minutes", label: "minutes" },
+      { value: "hours", label: "hours" },
+      { value: "days", label: "days" }
+    ]);
+
+    xUnit.value = "flow units";
+    yUnit.value = "hours";
+
+    document.getElementById("xUnitLabel").textContent = "Inventory units";
+    document.getElementById("yUnitLabel").textContent = "Time units";
+  }
+
+  function updateLittleUI() {
+    const mode = document.getElementById("modeLittle").value;
 
     const xLabel = document.getElementById("xLabel");
     const yLabel = document.getElementById("yLabel");
@@ -249,79 +381,137 @@
 
     xInput.value = "";
     yInput.value = "";
-    document.getElementById("littleResult").textContent = "-";
+    setText("littleResult", "-");
+    clearText("littleConversions");
 
-    if (mode === "solveL") {
-      xLabel.textContent = "lambda (units per time)";
-      yLabel.textContent = "W (time)";
-      xInput.placeholder = "e.g., 4 (customers per hour)";
-      yInput.placeholder = "e.g., 0.5 (hours)";
+    if (mode === "solveI") {
+      xLabel.textContent = "Flow rate, R";
+      yLabel.textContent = "Flow time, T";
+      xInput.placeholder = "e.g., 4";
+      yInput.placeholder = "e.g., 30";
+      setUnitModeForSolveI();
     }
 
-    if (mode === "solveW") {
-      xLabel.textContent = "L (average number in system)";
-      yLabel.textContent = "lambda (units per time)";
-      xInput.placeholder = "e.g., 2 (customers)";
-      yInput.placeholder = "e.g., 4 (customers per hour)";
+    if (mode === "solveT") {
+      xLabel.textContent = "Inventory, I (average inventory in system)";
+      yLabel.textContent = "Flow rate, R";
+      xInput.placeholder = "e.g., 200";
+      yInput.placeholder = "e.g., 4";
+      setUnitModeForSolveT();
     }
 
-    if (mode === "solvelambda") {
-      xLabel.textContent = "L (average number in system)";
-      yLabel.textContent = "W (time)";
-      xInput.placeholder = "e.g., 2 (customers)";
-      yInput.placeholder = "e.g., 0.5 (hours)";
+    if (mode === "solveR") {
+      xLabel.textContent = "Inventory, I (average inventory in system)";
+      yLabel.textContent = "Flow time, T";
+      xInput.placeholder = "e.g., 200";
+      yInput.placeholder = "e.g., 2";
+      setUnitModeForSolveR();
     }
   }
 
   function runLittle() {
-    const mode = document.getElementById("mode").value;
+    const mode = document.getElementById("modeLittle").value;
     const x = parseNum("xInput");
     const y = parseNum("yInput");
 
     if (x === null || y === null) {
-      document.getElementById("littleResult").textContent = "Enter both inputs.";
+      setText("littleResult", "Enter both inputs.");
+      clearText("littleConversions");
       return;
     }
 
-    let out;
-
-    if (mode === "solveL") {
-      const lambda = x;
-      const W = y;
-      out = lambda * W;
-      document.getElementById("littleResult").textContent = "L = " + formatResult(out);
+    if (!isNonNegative(x) || !isNonNegative(y)) {
+      setText("littleResult", "Inputs must be non-negative numbers.");
+      clearText("littleConversions");
       return;
     }
 
-    if (mode === "solveW") {
-      const L = x;
-      const lambda = y;
-      if (lambda === 0) {
-        document.getElementById("littleResult").textContent = "lambda cannot be zero.";
+    const xUnit = document.getElementById("xUnit").value;
+    const yUnit = document.getElementById("yUnit").value;
+
+    // Preferred display units for outputs
+    // For T output: time unit dropdown (we'll use a sensible default based on current context)
+    // For R output: rate unit dropdown
+    let out, conversionsNote = "";
+
+    if (mode === "solveI") {
+      // Inputs: R (rate) and T (time)
+      const R_per_hour = x * (RATE_TO_PER_HOUR[xUnit] ?? 1);
+      const T_hours = y * (TIME_TO_HOURS[yUnit] ?? 1);
+
+      out = R_per_hour * T_hours; // flow units
+
+      const shown = formatResult(out, "roundLittle");
+      setText("littleResult", "I = " + shown + " flow units");
+      conversionsNote = `Converted to base units: R = ${R_per_hour} flow units/hour, T = ${T_hours} hours.`;
+      setText("littleConversions", conversionsNote);
+      return;
+    }
+
+    if (mode === "solveT") {
+      // Inputs: I (flow units) and R (rate)
+      const I = x;
+      const R_per_hour = y * (RATE_TO_PER_HOUR[yUnit] ?? 1);
+
+      if (R_per_hour === 0) {
+        setText("littleResult", "Flow rate R must be > 0.");
+        clearText("littleConversions");
         return;
       }
-      out = L / lambda;
-      document.getElementById("littleResult").textContent = "W = " + formatResult(out);
+
+      const T_hours = I / R_per_hour;
+
+      // Choose a display time unit (simple rule: if hours < 1, show minutes; else hours)
+      // Students can still control inputs via dropdown; this is only for output readability.
+      let displayUnit = "hours";
+      if (T_hours < 1) displayUnit = "minutes";
+      if (T_hours >= 24) displayUnit = "days";
+
+      const T_display = T_hours / (TIME_TO_HOURS[displayUnit] ?? 1);
+      const shown = formatResult(T_display, "roundLittle");
+      setText("littleResult", "T = " + shown + " " + displayUnit);
+      conversionsNote = `Converted to base units: R = ${R_per_hour} flow units/hour, so T = ${T_hours} hours.`;
+      setText("littleConversions", conversionsNote);
       return;
     }
 
-    if (mode === "solvelambda") {
-      const L = x;
-      const W = y;
-      if (W === 0) {
-        document.getElementById("littleResult").textContent = "W cannot be zero.";
+    if (mode === "solveR") {
+      // Inputs: I (flow units) and T (time)
+      const I = x;
+      const T_hours = y * (TIME_TO_HOURS[yUnit] ?? 1);
+
+      if (T_hours === 0) {
+        setText("littleResult", "Flow time T must be > 0.");
+        clearText("littleConversions");
         return;
       }
-      out = L / W;
-      document.getElementById("littleResult").textContent = "lambda = " + formatResult(out);
+
+      const R_per_hour = I / T_hours;
+
+      // Choose a display rate unit (simple rule: default per hour; if small, per minute; if huge timeframe, per day)
+      let displayRateUnit = "per hour";
+      if (R_per_hour < 1) displayRateUnit = "per minute";
+      if (R_per_hour > 24 * 10) displayRateUnit = "per day"; // coarse heuristic
+
+      const factor = RATE_TO_PER_HOUR[displayRateUnit] ?? 1; // per hour conversion factor
+      const R_display = R_per_hour / factor;
+
+      const shown = formatResult(R_display, "roundLittle");
+      const label = (displayRateUnit === "per minute") ? "flow units/minute"
+                 : (displayRateUnit === "per day") ? "flow units/day"
+                 : "flow units/hour";
+
+      setText("littleResult", "R = " + shown + " " + label);
+      conversionsNote = `Converted to base units: T = ${T_hours} hours, so R = ${R_per_hour} flow units/hour.`;
+      setText("littleConversions", conversionsNote);
       return;
     }
   }
 
   function resetLittle() {
-    document.getElementById("mode").value = "solveL";
-    document.getElementById("round").value = "none";
-    updateLittleLabels();
+    document.getElementById("modeLittle").value = "solveI";
+    document.getElementById("roundLittle").value = "none";
+    updateLittleUI();
   }
 
   /* -------- Accordion behavior (only one open at a time) --------
@@ -338,7 +528,7 @@
   });
 
   /* Initialize */
-  updateLittleLabels();
+  updateLittleUI();
 </script>
 </body>
 </html>
