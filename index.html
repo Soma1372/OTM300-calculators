@@ -9,15 +9,38 @@
   <meta name="description" content="OTM 300 Exam Calculators (Little's Law and Process Analysis).">
 
   <style>
+    * { box-sizing: border-box; } /* IMPORTANT: prevents 100% width overflow */
+
     body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
     .container { max-width: 900px; margin: 0 auto; }
     h1 { margin-bottom: 8px; }
     .note { color: #444; margin-top: 0; }
+
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* This prevents grids from overflowing/overlapping when content is wide */
+    .grid > * { min-width: 0; }
+    .grid.tight { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
     label { display: block; font-weight: 600; margin-bottom: 4px; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
-    button { padding: 10px 14px; border: 1px solid #aaa; border-radius: 8px; background: #f7f7f7; cursor: pointer; font-size: 16px; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      background: #f7f7f7;
+      cursor: pointer;
+      font-size: 16px;
+    }
     button:hover { background: #eee; }
+
     .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
     .result { font-size: 18px; font-weight: 700; padding: 10px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; }
     .small { font-size: 13px; color: #555; }
@@ -55,7 +78,7 @@
 
     .input-with-unit {
       display: grid;
-      grid-template-columns: 1fr 180px;
+      grid-template-columns: minmax(0, 1fr) 150px; /* narrower unit column to avoid overlap */
       gap: 10px;
       align-items: end;
     }
@@ -86,7 +109,8 @@
       padding: 10px 10px;
       border-bottom: 1px solid #f1f1f1;
       text-align: left;
-      vertical-align: top;
+      vertical-align: middle;
+      overflow: hidden; /* prevents input spilling */
     }
     .tbl th { background: #fafafa; font-weight: 700; }
     .tbl tr:last-child td { border-bottom: none; }
@@ -101,8 +125,24 @@
       margin-left: 6px;
     }
 
+    /* Checkbox alignment */
+    .checkline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .checkline input[type="checkbox"] {
+      margin: 0;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
+      .grid.tight { grid-template-columns: 1fr; }
       .input-with-unit { grid-template-columns: 1fr; }
     }
   </style>
@@ -259,7 +299,6 @@
       <summary>3. Process Analysis</summary>
       <div class="content">
 
-        <!-- Formulas note (Little’s Law style) -->
         <p class="small">
           <strong>Formulas:</strong><br>
           <span class="mono">capacity = m / processing time</span><br>
@@ -311,7 +350,7 @@
 
         <!-- SINGLE -->
         <div id="ch3TabSingle" style="margin-top: 12px;">
-          <div class="grid" style="align-items:start;">
+          <div class="grid tight" style="align-items:start;">
             <div>
               <h3 class="section-title">Inputs</h3>
 
@@ -326,7 +365,7 @@
                 </select>
               </div>
 
-              <div class="grid" style="margin-top: 12px;">
+              <div class="grid tight" style="margin-top: 12px;">
                 <div>
                   <label>Servers (m)</label>
                   <input id="m1" type="number" step="1" min="0" value="1">
@@ -348,12 +387,10 @@
                 <button type="button" onclick="runCh3Single()">Compute</button>
               </div>
 
-              <div style="margin-top: 10px;">
-                <label style="font-weight:600;">
-                  <input type="checkbox" id="ch3ShowConvSingle" onchange="toggleCh3Conv('single')" />
-                  Show conversions
-                </label>
-              </div>
+              <label class="checkline">
+                <input type="checkbox" id="ch3ShowConvSingle" onchange="toggleCh3Conv('single')" />
+                Show conversions
+              </label>
             </div>
 
             <div>
@@ -464,7 +501,7 @@
             </table>
           </div>
 
-          <div class="grid" style="margin-top: 12px;">
+          <div class="grid tight" style="margin-top: 12px;">
             <div>
               <label>Demand rate</label>
               <div class="input-with-unit">
@@ -509,12 +546,11 @@
             </table>
           </div>
 
-          <div style="margin-top: 10px;">
-            <label style="font-weight:600;">
-              <input type="checkbox" id="ch3ShowConvMulti" onchange="toggleCh3Conv('multi')" />
-              Show conversions
-            </label>
-          </div>
+          <label class="checkline">
+            <input type="checkbox" id="ch3ShowConvMulti" onchange="toggleCh3Conv('multi')" />
+            Show conversions
+          </label>
+
           <div class="small" id="ch3MultiConversions" style="margin-top:10px; display:none;"></div>
 
           <p class="small" style="margin-top:10px;">
