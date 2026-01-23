@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>OTM 300 Calculators</title>
 
-  <meta name="copyright" content="© 2025 Amir. All rights reserved.">
+  <meta name="copyright" content="© 2026 Amir. All rights reserved.">
   <meta name="description" content="OTM 300 Exam Calculators (Little's Law and Process Analysis).">
 
   <style>
@@ -73,8 +73,33 @@
       line-height: 1.4;
     }
 
-    table { font-size: 16px; }
-    th { font-weight: 700; }
+    .tbl-wrap { overflow-x: auto; }
+    table.tbl {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .tbl th, .tbl td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #f1f1f1;
+      text-align: left;
+      vertical-align: top;
+    }
+    .tbl th { background: #fafafa; font-weight: 700; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f2f2f2;
+      border: 1px solid #e6e6e6;
+      font-size: 12px;
+      color: #555;
+      margin-left: 6px;
+    }
 
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
@@ -234,13 +259,17 @@
       <summary>3. Process Analysis</summary>
       <div class="content">
 
+        <!-- Formulas note (Little’s Law style) -->
         <p class="small">
-          Formulas:
-          <span class="mono">capacity = m / processing time</span> |
-          <span class="mono">flow rate = min(process capacity, demand rate)</span> |
-          <span class="mono">utilization = flow rate / capacity</span> |
-          <span class="mono">cycle time = 1 / flow rate</span> |
-          <span class="mono">process capacity = min(capacityᵢ)</span>
+          <strong>Formulas:</strong><br>
+          <span class="mono">capacity = m / processing time</span><br>
+          <span class="mono">process capacity = min(capacityᵢ)</span><br>
+          <span class="mono">flow rate = min(process capacity, demand rate)</span><br>
+          <span class="mono">utilization = flow rate / capacity</span><br>
+          <span class="mono">cycle time = 1 / flow rate</span><br>
+          <span class="small">
+            where <strong>m</strong> is the number of parallel servers, and processing time is <em>time per unit</em>.
+          </span>
         </p>
 
         <div class="row" style="margin-top: 10px;">
@@ -329,11 +358,34 @@
 
             <div>
               <h3 class="section-title">Outputs</h3>
-
-              <div class="result" id="ch3SingleOutCapacity">Capacity: -</div>
-              <div class="result" id="ch3SingleOutFlow" style="margin-top:10px;">Flow rate: -</div>
-              <div class="result" id="ch3SingleOutUtil" style="margin-top:10px;">Utilization: -</div>
-              <div class="result" id="ch3SingleOutCycle" style="margin-top:10px;">Cycle time: -</div>
+              <div class="tbl-wrap">
+                <table class="tbl">
+                  <thead>
+                    <tr>
+                      <th>Metric</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Capacity</td>
+                      <td id="ch3SingleCapCell">-</td>
+                    </tr>
+                    <tr>
+                      <td>Flow rate</td>
+                      <td id="ch3SingleFlowCell">-</td>
+                    </tr>
+                    <tr>
+                      <td>Utilization</td>
+                      <td id="ch3SingleUtilCell">-</td>
+                    </tr>
+                    <tr>
+                      <td>Cycle time</td>
+                      <td id="ch3SingleCycleCell">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               <div class="small" id="ch3SingleConversions" style="margin-top:10px; display:none;"></div>
             </div>
@@ -345,21 +397,21 @@
           <h3 class="section-title">Inputs</h3>
           <p class="small">Enter the steps you have (up to 4). Leave unused rows blank.</p>
 
-          <div style="overflow-x:auto;">
-            <table style="width:100%; border-collapse:collapse;">
+          <div class="tbl-wrap">
+            <table class="tbl">
               <thead>
                 <tr>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Step</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Processing time</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Unit</th>
-                  <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">m</th>
+                  <th style="width:70px;">Step</th>
+                  <th>Processing time</th>
+                  <th style="width:140px;">Unit</th>
+                  <th style="width:110px;">m</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">1</td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="ptS1" type="number" step="any" placeholder="e.g., 2"></td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">
+                  <td>1</td>
+                  <td><input id="ptS1" type="number" step="any" placeholder="e.g., 2"></td>
+                  <td>
                     <select id="ptS1Unit">
                       <option value="seconds">sec/unit</option>
                       <option value="minutes" selected>min/unit</option>
@@ -367,13 +419,12 @@
                       <option value="days">day/unit</option>
                     </select>
                   </td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="mS1" type="number" step="1" min="0" value="1"></td>
+                  <td><input id="mS1" type="number" step="1" min="0" value="1"></td>
                 </tr>
-
                 <tr>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">2</td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="ptS2" type="number" step="any" placeholder="e.g., 3"></td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">
+                  <td>2</td>
+                  <td><input id="ptS2" type="number" step="any" placeholder="e.g., 3"></td>
+                  <td>
                     <select id="ptS2Unit">
                       <option value="seconds">sec/unit</option>
                       <option value="minutes" selected>min/unit</option>
@@ -381,13 +432,12 @@
                       <option value="days">day/unit</option>
                     </select>
                   </td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="mS2" type="number" step="1" min="0" value="1"></td>
+                  <td><input id="mS2" type="number" step="1" min="0" value="1"></td>
                 </tr>
-
                 <tr>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">3</td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="ptS3" type="number" step="any" placeholder="e.g., 1.5"></td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;">
+                  <td>3</td>
+                  <td><input id="ptS3" type="number" step="any" placeholder="e.g., 1.5"></td>
+                  <td>
                     <select id="ptS3Unit">
                       <option value="seconds">sec/unit</option>
                       <option value="minutes" selected>min/unit</option>
@@ -395,13 +445,12 @@
                       <option value="days">day/unit</option>
                     </select>
                   </td>
-                  <td style="padding:8px; border-bottom:1px solid #f3f3f3;"><input id="mS3" type="number" step="1" min="0" value="1"></td>
+                  <td><input id="mS3" type="number" step="1" min="0" value="1"></td>
                 </tr>
-
                 <tr>
-                  <td style="padding:8px;">4</td>
-                  <td style="padding:8px;"><input id="ptS4" type="number" step="any" placeholder="e.g., 4"></td>
-                  <td style="padding:8px;">
+                  <td>4</td>
+                  <td><input id="ptS4" type="number" step="any" placeholder="e.g., 4"></td>
+                  <td>
                     <select id="ptS4Unit">
                       <option value="seconds">sec/unit</option>
                       <option value="minutes" selected>min/unit</option>
@@ -409,7 +458,7 @@
                       <option value="days">day/unit</option>
                     </select>
                   </td>
-                  <td style="padding:8px;"><input id="mS4" type="number" step="1" min="0" value="1"></td>
+                  <td><input id="mS4" type="number" step="1" min="0" value="1"></td>
                 </tr>
               </tbody>
             </table>
@@ -434,32 +483,43 @@
           </div>
 
           <h3 class="section-title" style="margin-top: 14px;">Outputs</h3>
-          <div class="grid" style="align-items:start;">
-            <div>
-              <div class="result" id="ch3MultiOutProcCap">Process capacity: -</div>
-              <div class="result" id="ch3MultiOutFlow" style="margin-top:10px;">Flow rate: -</div>
-              <div class="result" id="ch3MultiOutCycle" style="margin-top:10px;">Cycle time: -</div>
 
-              <div style="margin-top: 10px;">
-                <label style="font-weight:600;">
-                  <input type="checkbox" id="ch3ShowConvMulti" onchange="toggleCh3Conv('multi')" />
-                  Show conversions
-                </label>
-              </div>
-              <div class="small" id="ch3MultiConversions" style="margin-top:10px; display:none;"></div>
-
-              <p class="small" style="margin-top:10px;">
-                Note: Step-level metrics are intentionally not shown.
-              </p>
-            </div>
-
-            <div>
-              <div class="small" style="margin-top: 4px;">
-                (No step-level table displayed.)
-              </div>
-            </div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Process capacity <span class="pill">(no step shown)</span></td>
+                  <td id="ch3MultiProcCapCell">-</td>
+                </tr>
+                <tr>
+                  <td>Flow rate</td>
+                  <td id="ch3MultiFlowCell">-</td>
+                </tr>
+                <tr>
+                  <td>Cycle time</td>
+                  <td id="ch3MultiCycleCell">-</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
+          <div style="margin-top: 10px;">
+            <label style="font-weight:600;">
+              <input type="checkbox" id="ch3ShowConvMulti" onchange="toggleCh3Conv('multi')" />
+              Show conversions
+            </label>
+          </div>
+          <div class="small" id="ch3MultiConversions" style="margin-top:10px; display:none;"></div>
+
+          <p class="small" style="margin-top:10px;">
+            Note: Step-level metrics are intentionally not shown.
+          </p>
         </div>
       </div>
     </details>
@@ -573,7 +633,7 @@
     }
   });
 
-  /* -------- Little’s Law with unit conversion -------- */
+  /* -------- Little’s Law -------- */
 
   // Base time unit: hour
   const TIME_TO_HOURS = {
@@ -891,21 +951,26 @@
     return m / pt_hours_per_unit; // units/hour
   }
 
+  function setCell(id, txt) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = txt;
+  }
+
   function runCh3Single() {
     const pt = parseNum("pt1");
     const demand = parseNum("demand1");
     const m = parseNum("m1");
 
     if (pt === null || demand === null) {
-      setText("ch3SingleOutCapacity", "Capacity: Enter processing time and demand rate.");
-      setText("ch3SingleOutFlow", "Flow rate: -");
-      setText("ch3SingleOutUtil", "Utilization: -");
-      setText("ch3SingleOutCycle", "Cycle time: -");
+      setCell("ch3SingleCapCell", "Enter processing time and demand rate.");
+      setCell("ch3SingleFlowCell", "-");
+      setCell("ch3SingleUtilCell", "-");
+      setCell("ch3SingleCycleCell", "-");
       clearText("ch3SingleConversions");
       return;
     }
     if (!isNonNegative(pt) || !isNonNegative(demand)) {
-      setText("ch3SingleOutCapacity", "Capacity: Inputs must be non-negative.");
+      setCell("ch3SingleCapCell", "Inputs must be non-negative.");
       return;
     }
 
@@ -916,7 +981,7 @@
 
     const cap_per_hour = computeCapacityPerHour(pt, ptUnit, m);
     if (cap_per_hour === null) {
-      setText("ch3SingleOutCapacity", "Capacity: Processing time must be > 0.");
+      setCell("ch3SingleCapCell", "Processing time must be > 0.");
       return;
     }
 
@@ -937,10 +1002,10 @@
 
     const rateLabel = rateLabelFromUnit(outRateUnit);
 
-    setText("ch3SingleOutCapacity", `Capacity: ${cap_out} ${rateLabel}`);
-    setText("ch3SingleOutFlow", `Flow rate: ${flow_out} ${rateLabel}`);
-    setText("ch3SingleOutUtil", `Utilization: ${util_out}`);
-    setText("ch3SingleOutCycle", `Cycle time: ${cycle_out} ${outTimeUnit}`);
+    setCell("ch3SingleCapCell", `${cap_out} ${rateLabel}`);
+    setCell("ch3SingleFlowCell", `${flow_out} ${rateLabel}`);
+    setCell("ch3SingleUtilCell", `${util_out}`);
+    setCell("ch3SingleCycleCell", `${cycle_out} ${outTimeUnit}`);
 
     setText(
       "ch3SingleConversions",
@@ -954,7 +1019,7 @@
     const mId = `mS${stepIdx}`;
 
     const pt = parseNum(ptId);
-    if (pt === null) return null; // unused row
+    if (pt === null) return null;
 
     if (!isNonNegative(pt)) return { error: "Processing times must be non-negative." };
 
@@ -970,14 +1035,14 @@
   function runCh3Multi() {
     const demand = parseNum("demandS");
     if (demand === null) {
-      setText("ch3MultiOutProcCap", "Process capacity: Enter demand rate.");
-      setText("ch3MultiOutFlow", "Flow rate: -");
-      setText("ch3MultiOutCycle", "Cycle time: -");
+      setCell("ch3MultiProcCapCell", "Enter demand rate.");
+      setCell("ch3MultiFlowCell", "-");
+      setCell("ch3MultiCycleCell", "-");
       clearText("ch3MultiConversions");
       return;
     }
     if (!isNonNegative(demand)) {
-      setText("ch3MultiOutProcCap", "Process capacity: Demand must be non-negative.");
+      setCell("ch3MultiProcCapCell", "Demand must be non-negative.");
       return;
     }
 
@@ -989,16 +1054,19 @@
     for (let i = 1; i <= 4; i++) {
       const s = readStepCapPerHour(i);
       if (s && s.error) {
-        setText("ch3MultiOutProcCap", `Process capacity: ${s.error}`);
+        setCell("ch3MultiProcCapCell", s.error);
+        setCell("ch3MultiFlowCell", "-");
+        setCell("ch3MultiCycleCell", "-");
+        clearText("ch3MultiConversions");
         return;
       }
       if (s) caps.push(s.cap_per_hour);
     }
 
     if (caps.length === 0) {
-      setText("ch3MultiOutProcCap", "Process capacity: Enter at least one step.");
-      setText("ch3MultiOutFlow", "Flow rate: -");
-      setText("ch3MultiOutCycle", "Cycle time: -");
+      setCell("ch3MultiProcCapCell", "Enter at least one step.");
+      setCell("ch3MultiFlowCell", "-");
+      setCell("ch3MultiCycleCell", "-");
       clearText("ch3MultiConversions");
       return;
     }
@@ -1016,9 +1084,9 @@
       ? "N/A"
       : formatResult(cycleTimeOutFromHoursPerUnit(cycle_hours_per_unit, outTimeUnit), "roundCh3");
 
-    setText("ch3MultiOutProcCap", `Process capacity: ${procCap_out} ${rateLabel}`);
-    setText("ch3MultiOutFlow", `Flow rate: ${flow_out} ${rateLabel}`);
-    setText("ch3MultiOutCycle", `Cycle time: ${cycle_out} ${outTimeUnit}`);
+    setCell("ch3MultiProcCapCell", `${procCap_out} ${rateLabel}`);
+    setCell("ch3MultiFlowCell", `${flow_out} ${rateLabel}`);
+    setCell("ch3MultiCycleCell", `${cycle_out} ${outTimeUnit}`);
 
     setText(
       "ch3MultiConversions",
@@ -1052,15 +1120,15 @@
     document.getElementById("demandS").value = "";
     document.getElementById("demandSUnit").value = "per hour";
 
-    setText("ch3SingleOutCapacity", "Capacity: -");
-    setText("ch3SingleOutFlow", "Flow rate: -");
-    setText("ch3SingleOutUtil", "Utilization: -");
-    setText("ch3SingleOutCycle", "Cycle time: -");
+    setCell("ch3SingleCapCell", "-");
+    setCell("ch3SingleFlowCell", "-");
+    setCell("ch3SingleUtilCell", "-");
+    setCell("ch3SingleCycleCell", "-");
     clearText("ch3SingleConversions");
 
-    setText("ch3MultiOutProcCap", "Process capacity: -");
-    setText("ch3MultiOutFlow", "Flow rate: -");
-    setText("ch3MultiOutCycle", "Cycle time: -");
+    setCell("ch3MultiProcCapCell", "-");
+    setCell("ch3MultiFlowCell", "-");
+    setCell("ch3MultiCycleCell", "-");
     clearText("ch3MultiConversions");
   }
 
