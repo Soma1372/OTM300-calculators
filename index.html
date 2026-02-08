@@ -148,6 +148,16 @@
       margin-top: 10px;
     }
 
+    .warn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #f0e3b0;
+      background: #fff9e6;
+      color: #5a4b00;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .grid.tight { grid-template-columns: 1fr; }
@@ -568,16 +578,21 @@
       </div>
     </details>
 
-    <!-- Chapter 4 (NEW) -->
+    <!-- Chapter 4 (UPDATED) -->
     <details class="calc">
       <summary>4. Process Improvement</summary>
       <div class="content">
-        <p class="small">
+        <div class="warn">
+          Note: This section does <strong>not</strong> compute everything. For anything not directly calculated here,
+          use the <strong>General Calculator</strong>. Also, this section does not identify bottlenecks or do min/max
+          reasoning for you.
+        </div>
+
+        <p class="small" style="margin-top:10px;">
           <strong>Formulas (as written in slides):</strong><br>
           <span class="mono">Labor Content = Sum of the processing times involving labor</span><br>
           <span class="mono">Cost of Direct Labor = (Wages per unit of time) / (Flow rate)</span><br>
           <span class="mono">Average Utilization = Labor Content / (Labor Content + Total Idle Time)</span><br>
-          <span class="mono">Capacity (units/hour) = 3600 / time (seconds)</span><br>
           <span class="mono">Takt Time = 1 / (Demand Rate)</span><br>
           <span class="mono">Target Manpower = Labor Content / Takt Time</span><br>
           <span class="mono">Profit = (Flow_Rate * (Price - Variable_Cost)) - Fixed_Cost</span>
@@ -590,7 +605,6 @@
               <option value="none">No rounding</option>
               <option value="2">Round to 2 decimals</option>
               <option value="3">Round to 3 decimals</option>
-              <option value="0">Round to whole number</option>
             </select>
           </div>
           <div style="flex: 1; min-width: 260px;">
@@ -795,7 +809,7 @@
           <h3 class="section-title">Takt Time + Target Manpower</h3>
           <p class="small">
             Formulas: <span class="mono">Takt Time = 1 / (Demand Rate)</span> and
-            <span class="mono">Target Manpower = LC / Takt Time</span>
+            <span class="mono">Target Manpower = Labor Content / Takt Time</span>
           </p>
 
           <div class="grid" style="margin-top: 12px;">
@@ -835,72 +849,33 @@
           </div>
         </div>
 
-        <!-- Profit -->
+        <!-- Profit (formula only, no calculator) -->
         <div class="card">
-          <h3 class="section-title">Profit</h3>
-          <p class="small">Formula: <span class="mono">Profit = (Flow Rate * (Price - Variable Cost)) - Fixed Cost</span></p>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label>Flow rate</label>
-              <div class="input-with-unit">
-                <input id="ch4P_Flow" type="number" step="any" placeholder="e.g., 76.6">
-                <select id="ch4P_FlowUnit">
-                  <option value="per hour" selected>units / hour</option>
-                  <option value="per minute">units / minute</option>
-                  <option value="per day">units / day</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label>Fixed cost (same time basis as flow rate)</label>
-              <div class="input-with-unit">
-                <input id="ch4P_Fixed" type="number" step="any" placeholder="e.g., 250">
-                <select id="ch4P_FixedUnit">
-                  <option value="per hour" selected>$ / hour</option>
-                  <option value="per minute">$ / minute</option>
-                  <option value="per day">$ / day</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label>Price ($/unit)</label>
-              <input id="ch4P_Price" type="number" step="any" placeholder="e.g., 6">
-            </div>
-            <div>
-              <label>Variable cost ($/unit)</label>
-              <input id="ch4P_VC" type="number" step="any" placeholder="e.g., 1.5">
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runCh4Profit()">Compute Profit</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Result</div>
-            <div class="result" id="ch4ProfitResult">-</div>
-            <div class="small" id="ch4ProfitConv" style="margin-top: 6px;"></div>
+          <h3 class="section-title">Profit (formula only)</h3>
+          <p class="small">
+            Formula: <span class="mono">Profit = (Flow Rate * (Price - Variable Cost)) - Fixed Cost</span>
+          </p>
+          <div class="warn" style="margin-top:10px;">
+            This site does not compute Profit directly. Use the <strong>General Calculator</strong> and keep your time basis consistent.
           </div>
         </div>
       </div>
     </details>
 
-    <!-- Chapter 5 (NEW) -->
+    <!-- Chapter 5 (UPDATED) -->
     <details class="calc">
       <summary>5. Complex Process Flows</summary>
       <div class="content">
-        <p class="small">
+        <div class="warn">
+          Note: This section does <strong>not</strong> do workload translation, SUMPRODUCT-style aggregation, or rework workload.
+          Use the <strong>General Calculator</strong> for anything not directly calculated here.
+        </div>
+
+        <p class="small" style="margin-top:10px;">
           <strong>Formulas (as written in slides):</strong><br>
           <span class="mono">Implied Utilization = Demand / Capacity</span><br>
           <span class="mono">Yield = Successful Output / Input</span><br>
-          <span class="mono">Input Required = Needed Output / Yield</span><br>
-          <span class="mono">Workload Share (minutes per 100 apps) = Volume * Time</span><br>
-          <span class="mono">Total Workload = SUMPRODUCT(Volume_Range, Time_Range)</span><br>
-          <span class="mono">Actual Workload = Standard Time + Extra Rework Time</span>
+          <span class="mono">Input Required = Needed Output / Yield</span>
         </p>
 
         <div class="row" style="margin-top: 10px;">
@@ -910,7 +885,6 @@
               <option value="none">No rounding</option>
               <option value="2">Round to 2 decimals</option>
               <option value="3">Round to 3 decimals</option>
-              <option value="0">Round to whole number</option>
             </select>
           </div>
           <button type="button" onclick="resetCh5()" style="margin-left:auto;">Reset</button>
@@ -1007,111 +981,6 @@
             <div class="small">Result</div>
             <div class="result" id="ch5ReqInputResult">-</div>
             <div class="small" id="ch5ReqNote" style="margin-top: 6px;"></div>
-          </div>
-        </div>
-
-        <!-- Workload Translation -->
-        <div class="card">
-          <h3 class="section-title">Workload Translation (SUMPRODUCT)</h3>
-          <p class="small">
-            Formulas: <span class="mono">Workload Share = Volume * Time</span> and
-            <span class="mono">Total Workload = SUMPRODUCT(Volume, Time)</span>
-          </p>
-          <p class="small">Enter up to 5 types. Volume can be “# units” (e.g., per 100 apps) or any consistent count.</p>
-
-          <div class="tbl-wrap">
-            <table class="tbl">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Volume</th>
-                  <th>Time per unit (minutes)</th>
-                  <th>Workload share (minutes)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><input id="ch5Type1" type="text" placeholder="e.g., Simple"></td>
-                  <td><input id="ch5Vol1" type="number" step="any" placeholder="e.g., 60"></td>
-                  <td><input id="ch5Time1" type="number" step="any" placeholder="e.g., 10"></td>
-                  <td id="ch5Share1">-</td>
-                </tr>
-                <tr>
-                  <td><input id="ch5Type2" type="text" placeholder="e.g., Medium"></td>
-                  <td><input id="ch5Vol2" type="number" step="any" placeholder="e.g., 30"></td>
-                  <td><input id="ch5Time2" type="number" step="any" placeholder="e.g., 25"></td>
-                  <td id="ch5Share2">-</td>
-                </tr>
-                <tr>
-                  <td><input id="ch5Type3" type="text" placeholder="e.g., Complex"></td>
-                  <td><input id="ch5Vol3" type="number" step="any" placeholder="e.g., 10"></td>
-                  <td><input id="ch5Time3" type="number" step="any" placeholder="e.g., 40"></td>
-                  <td id="ch5Share3">-</td>
-                </tr>
-                <tr>
-                  <td><input id="ch5Type4" type="text" placeholder=""></td>
-                  <td><input id="ch5Vol4" type="number" step="any" placeholder=""></td>
-                  <td><input id="ch5Time4" type="number" step="any" placeholder=""></td>
-                  <td id="ch5Share4">-</td>
-                </tr>
-                <tr>
-                  <td><input id="ch5Type5" type="text" placeholder=""></td>
-                  <td><input id="ch5Vol5" type="number" step="any" placeholder=""></td>
-                  <td><input id="ch5Time5" type="number" step="any" placeholder=""></td>
-                  <td id="ch5Share5">-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runCh5Workload()">Compute Workload</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Total workload</div>
-            <div class="result" id="ch5WorkloadTotal">-</div>
-          </div>
-        </div>
-
-        <!-- Rework -->
-        <div class="card">
-          <h3 class="section-title">Rework: Actual Workload</h3>
-          <p class="small">Formula: <span class="mono">Actual Workload = Standard Time + Extra Rework Time</span></p>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label>Standard time</label>
-              <div class="input-with-unit">
-                <input id="ch5StdTime" type="number" step="any" placeholder="e.g., 3">
-                <select id="ch5StdUnit">
-                  <option value="hours" selected>hours</option>
-                  <option value="minutes">minutes</option>
-                  <option value="seconds">seconds</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label>Extra rework time</label>
-              <div class="input-with-unit">
-                <input id="ch5ReworkTime" type="number" step="any" placeholder="e.g., 2">
-                <select id="ch5ReworkUnit">
-                  <option value="hours" selected>hours</option>
-                  <option value="minutes">minutes</option>
-                  <option value="seconds">seconds</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runCh5Rework()">Compute Actual Workload</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Result</div>
-            <div class="result" id="ch5ReworkResult">-</div>
-            <div class="small" id="ch5ReworkConv" style="margin-top: 6px;"></div>
           </div>
         </div>
       </div>
@@ -1554,7 +1423,6 @@
   function runCh3Single() {
     const pt = parseNum("pt1");
     const demand = parseNum("demand1");
-    const m = parseNum("m1");
 
     if (pt === null || demand === null) {
       setCell("ch3SingleCapCell", "Enter processing time and demand rate.");
@@ -1569,6 +1437,7 @@
       return;
     }
 
+    const m = parseNum("m1");
     const ptUnit = document.getElementById("pt1Unit").value;
     const demandUnit = document.getElementById("demand1Unit").value;
     const outRateUnit = document.getElementById("outRateUnitCh3").value;
@@ -1727,7 +1596,7 @@
     clearText("ch3MultiConversions");
   }
 
-  /* -------- Chapter 4 (NEW): Process Improvement -------- */
+  /* -------- Chapter 4: Process Improvement (updated) -------- */
 
   function hoursFromTime(val, unit) {
     return val * (TIME_TO_HOURS[unit] ?? 1);
@@ -1880,45 +1749,6 @@
     setText("ch4TaktTMConv", `Base units: demand=${demandPerHour} units/hour, TT=${taktHoursPerUnit} hours/unit, LC=${lcHours} hours/unit.`);
   }
 
-  function runCh4Profit() {
-    const flow = parseNum("ch4P_Flow");
-    const fixed = parseNum("ch4P_Fixed");
-    const price = parseNum("ch4P_Price");
-    const vc = parseNum("ch4P_VC");
-
-    if (flow === null || fixed === null || price === null || vc === null) {
-      setText("ch4ProfitResult", "Enter flow rate, fixed cost, price, and variable cost.");
-      clearText("ch4ProfitConv");
-      return;
-    }
-    if (!isNonNegative(flow) || !isNonNegative(fixed) || !isNonNegative(price) || !isNonNegative(vc)) {
-      setText("ch4ProfitResult", "Inputs must be non-negative.");
-      clearText("ch4ProfitConv");
-      return;
-    }
-
-    const fUnit = document.getElementById("ch4P_FlowUnit").value;
-    const fixedUnit = document.getElementById("ch4P_FixedUnit").value;
-
-    const flowPerHour = flow * (RATE_TO_PER_HOUR[fUnit] ?? 1);      // units/hour
-    const fixedPerHour = fixed * (RATE_TO_PER_HOUR[fixedUnit] ?? 1); // $/hour
-
-    const profitPerHour = (flowPerHour * (price - vc)) - fixedPerHour;
-
-    // Show in the same time basis as the selected output rate unit
-    const outRateUnit = document.getElementById("outRateUnitCh4").value;
-    const outFactor = RATE_TO_PER_HOUR[outRateUnit] ?? 1; // convert per-hour to per-outUnit
-    const profitOut = profitPerHour / outFactor;
-
-    let label = "$/hour";
-    if (outRateUnit === "per minute") label = "$/minute";
-    if (outRateUnit === "per day") label = "$/day";
-
-    const shown = formatResult(profitOut, "roundCh4");
-    setText("ch4ProfitResult", `Profit = $${shown} ${label}`);
-    setText("ch4ProfitConv", `Base units: flow=${flowPerHour} units/hour, fixed=${fixedPerHour} $/hour.`);
-  }
-
   function resetCh4() {
     document.getElementById("roundCh4").value = "none";
     document.getElementById("outTimeUnitCh4").value = "seconds";
@@ -1952,24 +1782,9 @@
     setText("ch4TaktResult", "-");
     setText("ch4TMResult", "-");
     clearText("ch4TaktTMConv");
-
-    document.getElementById("ch4P_Flow").value = "";
-    document.getElementById("ch4P_FlowUnit").value = "per hour";
-    document.getElementById("ch4P_Fixed").value = "";
-    document.getElementById("ch4P_FixedUnit").value = "per hour";
-    document.getElementById("ch4P_Price").value = "";
-    document.getElementById("ch4P_VC").value = "";
-    setText("ch4ProfitResult", "-");
-    clearText("ch4ProfitConv");
   }
 
-  /* -------- Chapter 5 (NEW): Complex Process Flows -------- */
-
-  function unitLabelForRate(u) {
-    if (u === "per minute") return "per minute";
-    if (u === "per day") return "per day";
-    return "per hour";
-  }
+  /* -------- Chapter 5: Complex Process Flows (updated) -------- */
 
   function runCh5IU() {
     const demand = parseNum("ch5Demand");
@@ -2049,72 +1864,6 @@
     setText("ch5ReqNote", "Note: Many slides round up to the next whole unit when units must be integers.");
   }
 
-  function runCh5Workload() {
-    let total = 0;
-    let any = false;
-
-    for (let i = 1; i <= 5; i++) {
-      const v = parseNum(`ch5Vol${i}`);
-      const t = parseNum(`ch5Time${i}`);
-
-      if (v === null && t === null) {
-        setText(`ch5Share${i}`, "-");
-        continue;
-      }
-
-      if (v === null || t === null) {
-        setText(`ch5Share${i}`, "Enter both");
-        continue;
-      }
-
-      if (!isNonNegative(v) || !isNonNegative(t)) {
-        setText(`ch5Share${i}`, "Non-neg only");
-        continue;
-      }
-
-      const share = v * t;
-      total += share;
-      any = true;
-
-      setText(`ch5Share${i}`, formatResult(share, "roundCh5"));
-    }
-
-    if (!any) {
-      setText("ch5WorkloadTotal", "Enter at least one row.");
-      return;
-    }
-    setText("ch5WorkloadTotal", `${formatResult(total, "roundCh5")} minutes`);
-  }
-
-  function runCh5Rework() {
-    const std = parseNum("ch5StdTime");
-    const rw = parseNum("ch5ReworkTime");
-    if (std === null || rw === null) {
-      setText("ch5ReworkResult", "Enter standard time and rework time.");
-      clearText("ch5ReworkConv");
-      return;
-    }
-    if (!isNonNegative(std) || !isNonNegative(rw)) {
-      setText("ch5ReworkResult", "Inputs must be non-negative.");
-      clearText("ch5ReworkConv");
-      return;
-    }
-    const u1 = document.getElementById("ch5StdUnit").value;
-    const u2 = document.getElementById("ch5ReworkUnit").value;
-
-    const stdH = hoursFromTime(std, u1);
-    const rwH = hoursFromTime(rw, u2);
-    const totalH = stdH + rwH;
-
-    // display in hours if either input was hours, else minutes by default
-    const outUnit = (u1 === "hours" || u2 === "hours") ? "hours" : "minutes";
-    const outVal = timeFromHours(totalH, outUnit);
-    const shown = formatResult(outVal, "roundCh5");
-
-    setText("ch5ReworkResult", `Actual Workload = ${shown} ${outUnit}`);
-    setText("ch5ReworkConv", `Base units: standard=${stdH} hours, rework=${rwH} hours.`);
-  }
-
   function resetCh5() {
     document.getElementById("roundCh5").value = "none";
 
@@ -2133,21 +1882,6 @@
     document.getElementById("ch5YieldDec").value = "";
     setText("ch5ReqInputResult", "-");
     setText("ch5ReqNote", "");
-
-    for (let i = 1; i <= 5; i++) {
-      document.getElementById(`ch5Type${i}`).value = "";
-      document.getElementById(`ch5Vol${i}`).value = "";
-      document.getElementById(`ch5Time${i}`).value = "";
-      setText(`ch5Share${i}`, "-");
-    }
-    setText("ch5WorkloadTotal", "-");
-
-    document.getElementById("ch5StdTime").value = "";
-    document.getElementById("ch5ReworkTime").value = "";
-    document.getElementById("ch5StdUnit").value = "hours";
-    document.getElementById("ch5ReworkUnit").value = "hours";
-    setText("ch5ReworkResult", "-");
-    clearText("ch5ReworkConv");
   }
 
   /* -------- Accordion behavior (only one open at a time) -------- */
