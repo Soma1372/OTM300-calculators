@@ -17,7 +17,6 @@
     .note { color: #444; margin-top: 0; }
 
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    /* This prevents grids from overflowing/overlapping when content is wide */
     .grid > * { min-width: 0; }
     .grid.tight { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 
@@ -78,7 +77,7 @@
 
     .input-with-unit {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 150px; /* narrower unit column to avoid overlap */
+      grid-template-columns: minmax(0, 1fr) 150px;
       gap: 10px;
       align-items: end;
     }
@@ -110,7 +109,7 @@
       border-bottom: 1px solid #f1f1f1;
       text-align: left;
       vertical-align: middle;
-      overflow: hidden; /* prevents input spilling */
+      overflow: hidden;
     }
     .tbl th { background: #fafafa; font-weight: 700; }
     .tbl tr:last-child td { border-bottom: none; }
@@ -125,7 +124,6 @@
       margin-left: 6px;
     }
 
-    /* Checkbox alignment */
     .checkline {
       display: inline-flex;
       align-items: center;
@@ -574,7 +572,7 @@
       </div>
     </details>
 
-    <!-- Chapter 4 (UPDATED) -->
+    <!-- Chapter 4 -->
     <details class="calc">
       <summary>4. Process Improvement</summary>
       <div class="content">
@@ -843,7 +841,7 @@
           </div>
         </div>
 
-        <!-- Profit (formula only, no calculator) -->
+        <!-- Profit -->
         <div class="card">
           <h3 class="section-title">Profit (formula only)</h3>
           <p class="small">
@@ -856,7 +854,7 @@
       </div>
     </details>
 
-    <!-- Chapter 5 (UPDATED) -->
+    <!-- Chapter 5 -->
     <details class="calc">
       <summary>5. Complex Process Flows</summary>
       <div class="content">
@@ -986,6 +984,10 @@
 
 <script>
   /* -------- Helpers -------- */
+
+  // GLOBAL DEFAULT: 2 decimals (unless a rounding dropdown exists and is set to whole number)
+  const DEFAULT_DECIMALS = 2;
+
   function parseNum(id) {
     const v = document.getElementById(id).value;
     if (v === "" || v === null) return null;
@@ -993,16 +995,20 @@
     return Number.isFinite(n) ? n : null;
   }
 
-  // Default rounding everywhere: 2 decimals.
-  // If a rounding dropdown exists, it can override to whole number (0 decimals).
+  // If a rounding dropdown exists, it may override to 0 decimals (whole number).
+  // Otherwise, default is always 2 decimals.
   function formatResult(value, roundSelectId) {
     if (!Number.isFinite(value)) return String(value);
 
+    let decimals = DEFAULT_DECIMALS;
     const roundEl = document.getElementById(roundSelectId);
-    const roundMode = roundEl ? roundEl.value : "2";
-    const decimals = Number(roundMode);
+    if (roundEl) {
+      const v = Number(roundEl.value);
+      if (Number.isFinite(v)) decimals = v;
+    }
 
-    if (!Number.isFinite(decimals)) return value.toFixed(2);
+    // Clamp: only allow 0..10 just in case
+    decimals = Math.max(0, Math.min(10, decimals));
     return value.toFixed(decimals);
   }
 
@@ -1106,8 +1112,7 @@
     "per second": 3600,
     "per minute": 60,
     "per hour": 1,
-    "per day": 1 / 24,
-    "per minute $": 60 // not used; safe placeholder
+    "per day": 1 / 24
   };
 
   function setUnitModeForSolveI() {
@@ -1417,7 +1422,7 @@
 
   function runCh3Single() {
     const pt = parseNum("pt1");
-    const demand = parseNum("demand1"); // OPTIONAL now
+    const demand = parseNum("demand1"); // OPTIONAL
 
     if (pt === null) {
       setCell("ch3SingleCapCell", "Enter processing time.");
@@ -1468,11 +1473,10 @@
       setCell("ch3SingleFlowCell", "Demand rate required");
       setCell("ch3SingleUtilCell", "Demand rate required");
       setCell("ch3SingleCycleCell", "Demand rate required");
-      setText("ch3SingleConversions", `Base units: capacity=${cap_per_hour} flow units/hour.`);
+      setText("ch3SingleConversions", `Base units: capacity=${cap_per_hour.toFixed(6)} flow units/hour.`);
       return;
     }
 
-    // demand provided -> compute remaining metrics
     const demand_per_hour = toPerHour(demand, demandUnit);
     const flow_per_hour = Math.min(cap_per_hour, demand_per_hour);
 
@@ -1491,7 +1495,7 @@
 
     setText(
       "ch3SingleConversions",
-      `Base units: capacity=${cap_per_hour} flow units/hour, demand=${demand_per_hour} flow units/hour, flow rate=${flow_per_hour} flow units/hour.`
+      `Base units: capacity=${cap_per_hour.toFixed(6)} flow units/hour, demand=${demand_per_hour.toFixed(6)} flow units/hour, flow rate=${flow_per_hour.toFixed(6)} flow units/hour.`
     );
   }
 
@@ -1515,7 +1519,7 @@
   }
 
   function runCh3Multi() {
-    const demand = parseNum("demandS"); // OPTIONAL now
+    const demand = parseNum("demandS"); // OPTIONAL
 
     if (demand !== null && !isNonNegative(demand)) {
       setCell("ch3MultiProcCapCell", "Demand must be non-negative (or blank).");
@@ -1557,7 +1561,7 @@
     if (demand === null) {
       setCell("ch3MultiFlowCell", "Demand rate required");
       setCell("ch3MultiCycleCell", "Demand rate required");
-      setText("ch3MultiConversions", `Base units: process capacity=${processCap_per_hour} flow units/hour.`);
+      setText("ch3MultiConversions", `Base units: process capacity=${processCap_per_hour.toFixed(6)} flow units/hour.`);
       return;
     }
 
@@ -1576,7 +1580,7 @@
 
     setText(
       "ch3MultiConversions",
-      `Base units: process capacity=${processCap_per_hour} flow units/hour, demand=${demand_per_hour} flow units/hour, flow rate=${flow_per_hour} flow units/hour.`
+      `Base units: process capacity=${processCap_per_hour.toFixed(6)} flow units/hour, demand=${demand_per_hour.toFixed(6)} flow units/hour, flow rate=${flow_per_hour.toFixed(6)} flow units/hour.`
     );
   }
 
@@ -1657,7 +1661,7 @@
     const shown = formatResult(outVal, "roundCh4");
 
     setText("ch4LCResult", `LC = ${shown} ${outUnit}/unit`);
-    setText("ch4LCConv", `Base units: LC = ${totalHours} hours/unit.`);
+    setText("ch4LCConv", `Base units: LC = ${totalHours.toFixed(6)} hours/unit.`);
   }
 
   function runCh4CDL() {
@@ -1689,7 +1693,7 @@
     const shown = formatResult(cdl, "roundCh4");
 
     setText("ch4CDLResult", `CDL = $${shown} / unit`);
-    setText("ch4CDLConv", `Base units: wages=${wagesPerHour} $/hour, flow=${flowPerHour} units/hour.`);
+    setText("ch4CDLConv", `Base units: wages=${wagesPerHour.toFixed(6)} $/hour, flow=${flowPerHour.toFixed(6)} units/hour.`);
   }
 
   function runCh4AU() {
@@ -1719,10 +1723,10 @@
     }
 
     const au = lcH / (lcH + idleH); // fraction
-    const shown = formatResult(au * 100, "roundCh4");
+    const shownPct = formatResult(au * 100, "roundCh4");
 
-    setText("ch4AUResult", `AU = ${shown}%`);
-    setText("ch4AUConv", `Base units: LC=${lcH} hours/unit, idle=${idleH} hours/unit.`);
+    setText("ch4AUResult", `AU = ${shownPct}%`);
+    setText("ch4AUConv", `Base units: LC=${lcH.toFixed(6)} hours/unit, idle=${idleH.toFixed(6)} hours/unit.`);
   }
 
   // Split behavior: each output independently reports missing required input(s)
@@ -1734,10 +1738,9 @@
     const dUnit = document.getElementById("ch4DemandUnit").value;
     const lcUnit = document.getElementById("ch4TM_LC_Unit").value;
 
-    // Clear conversions unless both computed
     clearText("ch4TaktTMConv");
 
-    // --- Takt Time (needs demand only)
+    // Takt Time (needs demand only)
     if (demand === null) {
       setText("ch4TaktResult", "Demand rate required");
     } else if (!isNonNegative(demand)) {
@@ -1752,7 +1755,7 @@
       setText("ch4TaktResult", `Takt Time = ${taktShown} ${outTimeUnit}/unit`);
     }
 
-    // --- Target Manpower (needs BOTH demand and LC)
+    // Target Manpower (needs BOTH demand and LC)
     if (demand === null) {
       setText("ch4TMResult", "Demand rate required");
       return;
@@ -1777,7 +1780,7 @@
     const tmShown = formatResult(tm, "roundCh4");
 
     setText("ch4TMResult", `Target Manpower = ${tmShown} workers`);
-    setText("ch4TaktTMConv", `Base units: demand=${demandPerHour} units/hour, TT=${taktHoursPerUnit} hours/unit, LC=${lcHours} hours/unit.`);
+    setText("ch4TaktTMConv", `Base units: demand=${demandPerHour.toFixed(6)} units/hour, TT=${taktHoursPerUnit.toFixed(6)} hours/unit, LC=${lcHours.toFixed(6)} hours/unit.`);
   }
 
   function resetCh4() {
@@ -1847,7 +1850,7 @@
     const shownPct = formatResult(iu * 100, "roundCh5");
 
     setText("ch5IUResult", `IU = ${shownIU} (${shownPct}%)`);
-    setText("ch5IUConv", `Base units: demand=${demandPerHour} units/hour, capacity=${capPerHour} units/hour.`);
+    setText("ch5IUConv", `Base units: demand=${demandPerHour.toFixed(6)} units/hour, capacity=${capPerHour.toFixed(6)} units/hour.`);
   }
 
   function runCh5Yield() {
