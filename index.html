@@ -169,7 +169,7 @@
 <body>
   <div class="container">
     <h1>OTM 300 Calculators</h1>
-    <p class="note">This page does not store data. Refreshing resets values.</p>
+    <p class="note"><strong>Exam note:</strong> You may use this entire page during the exam session. This page does not store data. Refreshing resets values.</p>
 
     <div class="row" style="margin: 12px 0 18px 0;">
       <button type="button" onclick="openAll()">Expand all</button>
@@ -179,7 +179,7 @@
 
     <!-- General Calculator -->
     <details class="calc" open>
-      <summary>General Calculator (Exam-Safe)</summary>
+      <summary>General Calculator</summary>
       <div class="content">
         <p class="small">Basic arithmetic only: + − × ÷, parentheses, decimals.</p>
 
@@ -254,9 +254,7 @@
           <div style="flex: 1; min-width: 220px;">
             <label for="roundLittle">Rounding</label>
             <select id="roundLittle">
-              <option value="none">No rounding</option>
-              <option value="2">Round to 2 decimals</option>
-              <option value="3">Round to 3 decimals</option>
+              <option value="2" selected>Round to 2 decimals</option>
               <option value="0">Round to whole number</option>
             </select>
           </div>
@@ -333,9 +331,7 @@
           <div style="flex: 1; min-width: 220px;">
             <label for="roundCh3">Rounding</label>
             <select id="roundCh3">
-              <option value="none">No rounding</option>
-              <option value="2">Round to 2 decimals</option>
-              <option value="3">Round to 3 decimals</option>
+              <option value="2" selected>Round to 2 decimals</option>
               <option value="0">Round to whole number</option>
             </select>
           </div>
@@ -389,7 +385,7 @@
                   <input id="m1" type="number" step="1" min="0" value="1">
                 </div>
                 <div>
-                  <label>Demand rate</label>
+                  <label>Demand rate <span class="pill">(optional)</span></label>
                   <div class="input-with-unit">
                     <input id="demand1" type="number" step="any" placeholder="e.g., 30">
                     <select id="demand1Unit">
@@ -521,7 +517,7 @@
 
           <div class="grid tight" style="margin-top: 12px;">
             <div>
-              <label>Demand rate</label>
+              <label>Demand rate <span class="pill">(optional)</span></label>
               <div class="input-with-unit">
                 <input id="demandS" type="number" step="any" placeholder="e.g., 20">
                 <select id="demandSUnit">
@@ -584,7 +580,7 @@
       <div class="content">
         <div class="warn">
           Note: This section does <strong>not</strong> compute everything. For anything not directly calculated here,
-          use the <strong>General Calculator</strong>. 
+          use the <strong>General Calculator</strong>.
         </div>
 
         <p class="small" style="margin-top:10px;">
@@ -601,9 +597,8 @@
           <div style="flex: 1; min-width: 220px;">
             <label for="roundCh4">Rounding</label>
             <select id="roundCh4">
-              <option value="none">No rounding</option>
-              <option value="2">Round to 2 decimals</option>
-              <option value="3">Round to 3 decimals</option>
+              <option value="2" selected>Round to 2 decimals</option>
+              <option value="0">Round to whole number</option>
             </select>
           </div>
           <div style="flex: 1; min-width: 260px;">
@@ -880,9 +875,8 @@
           <div style="flex: 1; min-width: 220px;">
             <label for="roundCh5">Rounding</label>
             <select id="roundCh5">
-              <option value="none">No rounding</option>
-              <option value="2">Round to 2 decimals</option>
-              <option value="3">Round to 3 decimals</option>
+              <option value="2" selected>Round to 2 decimals</option>
+              <option value="0">Round to whole number</option>
             </select>
           </div>
           <button type="button" onclick="resetCh5()" style="margin-left:auto;">Reset</button>
@@ -999,14 +993,16 @@
     return Number.isFinite(n) ? n : null;
   }
 
+  // Default rounding everywhere: 2 decimals.
+  // If a rounding dropdown exists, it can override to whole number (0 decimals).
   function formatResult(value, roundSelectId) {
+    if (!Number.isFinite(value)) return String(value);
+
     const roundEl = document.getElementById(roundSelectId);
-    const roundMode = roundEl ? roundEl.value : "none";
-    if (roundMode === "none") return String(value);
-
+    const roundMode = roundEl ? roundEl.value : "2";
     const decimals = Number(roundMode);
-    if (!Number.isFinite(decimals)) return String(value);
 
+    if (!Number.isFinite(decimals)) return value.toFixed(2);
     return value.toFixed(decimals);
   }
 
@@ -1042,7 +1038,7 @@
     resetCh5();
   }
 
-  /* -------- General Calculator (Exam-Safe) -------- */
+  /* -------- General Calculator -------- */
   function appendExpr(s) {
     const el = document.getElementById("expr");
     el.value = (el.value || "") + s;
@@ -1110,7 +1106,8 @@
     "per second": 3600,
     "per minute": 60,
     "per hour": 1,
-    "per day": 1 / 24
+    "per day": 1 / 24,
+    "per minute $": 60 // not used; safe placeholder
   };
 
   function setUnitModeForSolveI() {
@@ -1344,11 +1341,11 @@
 
   function resetLittle() {
     document.getElementById("modeLittle").value = "solveI";
-    document.getElementById("roundLittle").value = "none";
+    document.getElementById("roundLittle").value = "2";
     updateLittleUI();
   }
 
-  /* -------- Chapter 3: Process Analysis (bottleneck-safe outputs) -------- */
+  /* -------- Chapter 3: Process Analysis (demand-optional outputs) -------- */
 
   function setCh3Tab(which) {
     const single = document.getElementById("ch3TabSingle");
@@ -1420,18 +1417,30 @@
 
   function runCh3Single() {
     const pt = parseNum("pt1");
-    const demand = parseNum("demand1");
+    const demand = parseNum("demand1"); // OPTIONAL now
 
-    if (pt === null || demand === null) {
-      setCell("ch3SingleCapCell", "Enter processing time and demand rate.");
+    if (pt === null) {
+      setCell("ch3SingleCapCell", "Enter processing time.");
       setCell("ch3SingleFlowCell", "-");
       setCell("ch3SingleUtilCell", "-");
       setCell("ch3SingleCycleCell", "-");
       clearText("ch3SingleConversions");
       return;
     }
-    if (!isNonNegative(pt) || !isNonNegative(demand)) {
-      setCell("ch3SingleCapCell", "Inputs must be non-negative.");
+    if (!isNonNegative(pt)) {
+      setCell("ch3SingleCapCell", "Processing time must be non-negative.");
+      setCell("ch3SingleFlowCell", "-");
+      setCell("ch3SingleUtilCell", "-");
+      setCell("ch3SingleCycleCell", "-");
+      clearText("ch3SingleConversions");
+      return;
+    }
+    if (demand !== null && !isNonNegative(demand)) {
+      setCell("ch3SingleCapCell", "Demand must be non-negative (or blank).");
+      setCell("ch3SingleFlowCell", "-");
+      setCell("ch3SingleUtilCell", "-");
+      setCell("ch3SingleCycleCell", "-");
+      clearText("ch3SingleConversions");
       return;
     }
 
@@ -1444,27 +1453,38 @@
     const cap_per_hour = computeCapacityPerHour(pt, ptUnit, m);
     if (cap_per_hour === null) {
       setCell("ch3SingleCapCell", "Processing time must be > 0.");
+      setCell("ch3SingleFlowCell", "-");
+      setCell("ch3SingleUtilCell", "-");
+      setCell("ch3SingleCycleCell", "-");
+      clearText("ch3SingleConversions");
       return;
     }
 
+    const rateLabel = rateLabelFromUnit(outRateUnit);
+    const cap_out = formatResult(fromPerHour(cap_per_hour, outRateUnit), "roundCh3");
+    setCell("ch3SingleCapCell", `${cap_out} ${rateLabel}`);
+
+    if (demand === null) {
+      setCell("ch3SingleFlowCell", "Demand rate required");
+      setCell("ch3SingleUtilCell", "Demand rate required");
+      setCell("ch3SingleCycleCell", "Demand rate required");
+      setText("ch3SingleConversions", `Base units: capacity=${cap_per_hour} flow units/hour.`);
+      return;
+    }
+
+    // demand provided -> compute remaining metrics
     const demand_per_hour = toPerHour(demand, demandUnit);
     const flow_per_hour = Math.min(cap_per_hour, demand_per_hour);
 
     const util = cap_per_hour === 0 ? 0 : (flow_per_hour / cap_per_hour);
     const cycle_hours_per_unit = flow_per_hour === 0 ? Infinity : (1 / flow_per_hour);
 
-    const cap_out_raw = fromPerHour(cap_per_hour, outRateUnit);
-    const flow_out_raw = fromPerHour(flow_per_hour, outRateUnit);
-    const cycle_out_raw = cycleTimeOutFromHoursPerUnit(cycle_hours_per_unit, outTimeUnit);
-
-    const cap_out = formatResult(cap_out_raw, "roundCh3");
-    const flow_out = formatResult(flow_out_raw, "roundCh3");
+    const flow_out = formatResult(fromPerHour(flow_per_hour, outRateUnit), "roundCh3");
     const util_out = (cycle_hours_per_unit === Infinity) ? "N/A" : formatResult(util, "roundCh3");
-    const cycle_out = (cycle_hours_per_unit === Infinity) ? "N/A" : formatResult(cycle_out_raw, "roundCh3");
+    const cycle_out = (cycle_hours_per_unit === Infinity)
+      ? "N/A"
+      : formatResult(cycleTimeOutFromHoursPerUnit(cycle_hours_per_unit, outTimeUnit), "roundCh3");
 
-    const rateLabel = rateLabelFromUnit(outRateUnit);
-
-    setCell("ch3SingleCapCell", `${cap_out} ${rateLabel}`);
     setCell("ch3SingleFlowCell", `${flow_out} ${rateLabel}`);
     setCell("ch3SingleUtilCell", `${util_out}`);
     setCell("ch3SingleCycleCell", `${cycle_out} ${outTimeUnit}`);
@@ -1495,20 +1515,16 @@
   }
 
   function runCh3Multi() {
-    const demand = parseNum("demandS");
-    if (demand === null) {
-      setCell("ch3MultiProcCapCell", "Enter demand rate.");
+    const demand = parseNum("demandS"); // OPTIONAL now
+
+    if (demand !== null && !isNonNegative(demand)) {
+      setCell("ch3MultiProcCapCell", "Demand must be non-negative (or blank).");
       setCell("ch3MultiFlowCell", "-");
       setCell("ch3MultiCycleCell", "-");
       clearText("ch3MultiConversions");
       return;
     }
-    if (!isNonNegative(demand)) {
-      setCell("ch3MultiProcCapCell", "Demand must be non-negative.");
-      return;
-    }
 
-    const demandUnit = document.getElementById("demandSUnit").value;
     const outRateUnit = document.getElementById("outRateUnitCh3").value;
     const outTimeUnit = document.getElementById("outTimeUnitCh3").value;
 
@@ -1534,19 +1550,27 @@
     }
 
     const processCap_per_hour = Math.min(...caps);
+    const rateLabel = rateLabelFromUnit(outRateUnit);
+    const procCap_out = formatResult(fromPerHour(processCap_per_hour, outRateUnit), "roundCh3");
+    setCell("ch3MultiProcCapCell", `${procCap_out} ${rateLabel}`);
+
+    if (demand === null) {
+      setCell("ch3MultiFlowCell", "Demand rate required");
+      setCell("ch3MultiCycleCell", "Demand rate required");
+      setText("ch3MultiConversions", `Base units: process capacity=${processCap_per_hour} flow units/hour.`);
+      return;
+    }
+
+    const demandUnit = document.getElementById("demandSUnit").value;
     const demand_per_hour = toPerHour(demand, demandUnit);
     const flow_per_hour = Math.min(processCap_per_hour, demand_per_hour);
     const cycle_hours_per_unit = flow_per_hour === 0 ? Infinity : (1 / flow_per_hour);
 
-    const rateLabel = rateLabelFromUnit(outRateUnit);
-
-    const procCap_out = formatResult(fromPerHour(processCap_per_hour, outRateUnit), "roundCh3");
     const flow_out = formatResult(fromPerHour(flow_per_hour, outRateUnit), "roundCh3");
     const cycle_out = (cycle_hours_per_unit === Infinity)
       ? "N/A"
       : formatResult(cycleTimeOutFromHoursPerUnit(cycle_hours_per_unit, outTimeUnit), "roundCh3");
 
-    setCell("ch3MultiProcCapCell", `${procCap_out} ${rateLabel}`);
     setCell("ch3MultiFlowCell", `${flow_out} ${rateLabel}`);
     setCell("ch3MultiCycleCell", `${cycle_out} ${outTimeUnit}`);
 
@@ -1559,7 +1583,7 @@
   function resetCh3() {
     setCh3Tab("single");
 
-    document.getElementById("roundCh3").value = "none";
+    document.getElementById("roundCh3").value = "2";
     document.getElementById("outRateUnitCh3").value = "per hour";
     document.getElementById("outTimeUnitCh3").value = "minutes";
 
@@ -1594,7 +1618,7 @@
     clearText("ch3MultiConversions");
   }
 
-  /* -------- Chapter 4: Process Improvement (updated) -------- */
+  /* -------- Chapter 4: Process Improvement -------- */
 
   function hoursFromTime(val, unit) {
     return val * (TIME_TO_HOURS[unit] ?? 1);
@@ -1701,54 +1725,63 @@
     setText("ch4AUConv", `Base units: LC=${lcH} hours/unit, idle=${idleH} hours/unit.`);
   }
 
+  // Split behavior: each output independently reports missing required input(s)
   function runCh4TaktAndTM() {
     const demand = parseNum("ch4Demand");
     const lc = parseNum("ch4TM_LC");
-    if (demand === null || lc === null) {
-      setText("ch4TaktResult", "Enter demand and LC.");
-      setText("ch4TMResult", "-");
-      clearText("ch4TaktTMConv");
-      return;
-    }
-    if (!isNonNegative(demand) || !isNonNegative(lc)) {
-      setText("ch4TaktResult", "Inputs must be non-negative.");
-      setText("ch4TMResult", "-");
-      clearText("ch4TaktTMConv");
-      return;
-    }
-    if (demand === 0) {
-      setText("ch4TaktResult", "Demand rate must be > 0.");
-      setText("ch4TMResult", "-");
-      clearText("ch4TaktTMConv");
-      return;
-    }
 
+    const outTimeUnit = document.getElementById("outTimeUnitCh4").value;
     const dUnit = document.getElementById("ch4DemandUnit").value;
     const lcUnit = document.getElementById("ch4TM_LC_Unit").value;
-    const outTimeUnit = document.getElementById("outTimeUnitCh4").value;
 
-    // Demand -> units/hour
+    // Clear conversions unless both computed
+    clearText("ch4TaktTMConv");
+
+    // --- Takt Time (needs demand only)
+    if (demand === null) {
+      setText("ch4TaktResult", "Demand rate required");
+    } else if (!isNonNegative(demand)) {
+      setText("ch4TaktResult", "Demand must be non-negative.");
+    } else if (demand === 0) {
+      setText("ch4TaktResult", "Demand rate must be > 0.");
+    } else {
+      const demandPerHour = demand * (RATE_TO_PER_HOUR[dUnit] ?? 1);
+      const taktHoursPerUnit = 1 / demandPerHour;
+      const taktOut = timeFromHours(taktHoursPerUnit, outTimeUnit);
+      const taktShown = formatResult(taktOut, "roundCh4");
+      setText("ch4TaktResult", `Takt Time = ${taktShown} ${outTimeUnit}/unit`);
+    }
+
+    // --- Target Manpower (needs BOTH demand and LC)
+    if (demand === null) {
+      setText("ch4TMResult", "Demand rate required");
+      return;
+    }
+    if (!isNonNegative(demand) || demand === 0) {
+      setText("ch4TMResult", (demand === 0) ? "Demand rate must be > 0." : "Demand must be non-negative.");
+      return;
+    }
+    if (lc === null) {
+      setText("ch4TMResult", "Labor Content required");
+      return;
+    }
+    if (!isNonNegative(lc)) {
+      setText("ch4TMResult", "Labor Content must be non-negative.");
+      return;
+    }
+
     const demandPerHour = demand * (RATE_TO_PER_HOUR[dUnit] ?? 1);
-
-    // Takt time = 1 / demand rate (hours/unit)
     const taktHoursPerUnit = 1 / demandPerHour;
-
-    // convert to output time unit
-    const taktOut = timeFromHours(taktHoursPerUnit, outTimeUnit);
-    const taktShown = formatResult(taktOut, "roundCh4");
-
-    // Target manpower = LC / TT (must be same time basis)
     const lcHours = hoursFromTime(lc, lcUnit);
     const tm = lcHours / taktHoursPerUnit;
     const tmShown = formatResult(tm, "roundCh4");
 
-    setText("ch4TaktResult", `Takt Time = ${taktShown} ${outTimeUnit}/unit`);
     setText("ch4TMResult", `Target Manpower = ${tmShown} workers`);
     setText("ch4TaktTMConv", `Base units: demand=${demandPerHour} units/hour, TT=${taktHoursPerUnit} hours/unit, LC=${lcHours} hours/unit.`);
   }
 
   function resetCh4() {
-    document.getElementById("roundCh4").value = "none";
+    document.getElementById("roundCh4").value = "2";
     document.getElementById("outTimeUnitCh4").value = "seconds";
     document.getElementById("outRateUnitCh4").value = "per hour";
 
@@ -1782,7 +1815,7 @@
     clearText("ch4TaktTMConv");
   }
 
-  /* -------- Chapter 5: Complex Process Flows (updated) -------- */
+  /* -------- Chapter 5: Complex Process Flows -------- */
 
   function runCh5IU() {
     const demand = parseNum("ch5Demand");
@@ -1863,7 +1896,7 @@
   }
 
   function resetCh5() {
-    document.getElementById("roundCh5").value = "none";
+    document.getElementById("roundCh5").value = "2";
 
     document.getElementById("ch5Demand").value = "";
     document.getElementById("ch5Cap").value = "";
