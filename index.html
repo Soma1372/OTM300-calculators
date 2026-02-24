@@ -6,7 +6,7 @@
   <title>OTM 300 Calculators</title>
 
   <meta name="copyright" content="© 2026 Amir. All rights reserved.">
-  <meta name="description" content="OTM 300 Exam Calculators (Little's Law and Process Analysis).">
+  <meta name="description" content="OTM 300 Exam Calculators (Little's Law, Process Analysis, Process Improvement, Complex Flows, Process Interruptions, Lean/TPS).">
 
   <style>
     * { box-sizing: border-box; } /* IMPORTANT: prevents 100% width overflow */
@@ -841,7 +841,7 @@
           </div>
         </div>
 
-        <!-- Profit -->
+        <!-- Profit (formula only, no calculator) -->
         <div class="card">
           <h3 class="section-title">Profit (formula only)</h3>
           <p class="small">
@@ -858,9 +858,7 @@
     <details class="calc">
       <summary>5. Complex Process Flows</summary>
       <div class="content">
-        <div class="warn">
-          Note: None.
-        </div>
+        <div class="warn">Note: None.</div>
 
         <p class="small" style="margin-top:10px;">
           <strong>Formulas (as written in slides):</strong><br>
@@ -976,6 +974,407 @@
       </div>
     </details>
 
+    <!-- Chapter 6 -->
+    <details class="calc">
+      <summary>6. Process Interruptions</summary>
+      <div class="content">
+        <p class="small" style="margin-top:10px;">
+          <strong>Formulas (as written in slides):</strong><br>
+          <span class="mono">Batch size = (Target capacity × Total setup time) / (1 − (Target capacity × Processing time))</span>
+        </p>
+
+        <div class="row" style="margin-top: 10px;">
+          <div style="flex: 1; min-width: 220px;">
+            <label for="roundCh6">Rounding</label>
+            <select id="roundCh6">
+              <option value="2" selected>Round to 2 decimals</option>
+              <option value="0">Round to whole number</option>
+            </select>
+          </div>
+          <button type="button" onclick="resetCh6()" style="margin-left:auto;">Reset</button>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Batch Size</h3>
+          <p class="small">
+            Batch size is the number of units produced per setup (units). Target capacity is units/time.
+            Setup time is time. Processing time is time/unit.
+          </p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Target capacity</label>
+              <div class="input-with-unit">
+                <input id="ch6TC" type="number" step="any" placeholder="e.g., 30">
+                <select id="ch6TCUnit">
+                  <option value="per hour" selected>units / hour</option>
+                  <option value="per minute">units / minute</option>
+                  <option value="per day">units / day</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label>Total setup time</label>
+              <div class="input-with-unit">
+                <input id="ch6Setup" type="number" step="any" placeholder="e.g., 45">
+                <select id="ch6SetupUnit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label>Processing time (time per unit)</label>
+              <div class="input-with-unit">
+                <input id="ch6PT" type="number" step="any" placeholder="e.g., 1.2">
+                <select id="ch6PTUnit">
+                  <option value="minutes" selected>minutes / unit</option>
+                  <option value="seconds">seconds / unit</option>
+                  <option value="hours">hours / unit</option>
+                  <option value="days">days / unit</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label>&nbsp;</label>
+              <button type="button" onclick="runCh6Batch()">Compute Batch Size</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch6BatchResult">-</div>
+            <div class="small" id="ch6BatchConv" style="margin-top:6px;"></div>
+          </div>
+
+          <div class="warn" style="margin-top:10px;">
+            Note: This formula requires <span class="mono">1 − (Target capacity × Processing time) &gt; 0</span>.
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Chapter 7 -->
+    <details class="calc">
+      <summary>7. Lean and Toyota Production System</summary>
+      <div class="content">
+        <p class="small" style="margin-top:10px;">
+          <strong>Formulas (as written in slides):</strong><br>
+          <span class="mono">OEE = Value added time / Total available time</span><br>
+          <span class="mono">ITAT = Inventory / Flow rate</span><br>
+          <span class="mono">TPS Takt Time = Available time / Demand rate</span><br>
+          <span class="mono">Target manpower = Labor content / TPS Takt Time</span><br>
+          <span class="mono">Demand during replenishment time = Replenishment time × Demand rate</span><br>
+          <span class="mono">Number of Kanban cards = (Demand during replenishment time + Safety stock) / Container size</span><br>
+          <span class="mono">Value-added percentage = Value added time of a flow unit / Flow time</span>
+        </p>
+
+        <div class="row" style="margin-top: 10px;">
+          <div style="flex: 1; min-width: 220px;">
+            <label for="roundCh7">Rounding</label>
+            <select id="roundCh7">
+              <option value="2" selected>Round to 2 decimals</option>
+              <option value="0">Round to whole number</option>
+            </select>
+          </div>
+          <button type="button" onclick="resetCh7()" style="margin-left:auto;">Reset</button>
+        </div>
+
+        <!-- OEE -->
+        <div class="card">
+          <h3 class="section-title">Overall Equipment Effectiveness (OEE)</h3>
+          <p class="small">Formula: <span class="mono">OEE = Value added time / Total available time</span></p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Value added time</label>
+              <div class="input-with-unit">
+                <input id="ch7OEE_VA" type="number" step="any" placeholder="e.g., 320">
+                <select id="ch7OEE_VA_Unit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Total available time</label>
+              <div class="input-with-unit">
+                <input id="ch7OEE_Total" type="number" step="any" placeholder="e.g., 480">
+                <select id="ch7OEE_Total_Unit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7OEE()">Compute OEE</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch7OEE_Result">-</div>
+            <div class="small" id="ch7OEE_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <!-- ITAT -->
+        <div class="card">
+          <h3 class="section-title">Information Turnaround Time (ITAT)</h3>
+          <p class="small">Formula: <span class="mono">ITAT = Inventory / Flow rate</span></p>
+
+          <div class="row" style="margin-top: 10px;">
+            <div style="flex: 1; min-width: 260px;">
+              <label for="ch7ITAT_OutUnit">Output time units</label>
+              <select id="ch7ITAT_OutUnit">
+                <option value="minutes" selected>minutes</option>
+                <option value="seconds">seconds</option>
+                <option value="hours">hours</option>
+                <option value="days">days</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Inventory</label>
+              <input id="ch7ITAT_I" type="number" step="any" placeholder="e.g., 1200">
+            </div>
+            <div>
+              <label>Flow rate</label>
+              <div class="input-with-unit">
+                <input id="ch7ITAT_R" type="number" step="any" placeholder="e.g., 60">
+                <select id="ch7ITAT_R_Unit">
+                  <option value="per hour" selected>units / hour</option>
+                  <option value="per minute">units / minute</option>
+                  <option value="per day">units / day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7ITAT()">Compute ITAT</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch7ITAT_Result">-</div>
+            <div class="small" id="ch7ITAT_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <!-- TPS Takt Time -->
+        <div class="card">
+          <h3 class="section-title">TPS Takt Time</h3>
+          <p class="small">Formula: <span class="mono">TPS Takt Time = Available time / Demand rate</span></p>
+
+          <div class="row" style="margin-top: 10px;">
+            <div style="flex: 1; min-width: 260px;">
+              <label for="ch7Takt_OutUnit">Output time units (per unit)</label>
+              <select id="ch7Takt_OutUnit">
+                <option value="minutes" selected>minutes / unit</option>
+                <option value="seconds">seconds / unit</option>
+                <option value="hours">hours / unit</option>
+                <option value="days">days / unit</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Available time</label>
+              <div class="input-with-unit">
+                <input id="ch7Takt_Avail" type="number" step="any" placeholder="e.g., 480">
+                <select id="ch7Takt_Avail_Unit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Demand rate</label>
+              <div class="input-with-unit">
+                <input id="ch7Takt_Demand" type="number" step="any" placeholder="e.g., 160">
+                <select id="ch7Takt_Demand_Unit">
+                  <option value="per hour" selected>units / hour</option>
+                  <option value="per minute">units / minute</option>
+                  <option value="per day">units / day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7Takt()">Compute TPS Takt Time</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch7Takt_Result">-</div>
+            <div class="small" id="ch7Takt_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Target Manpower -->
+        <div class="card">
+          <h3 class="section-title">Target Manpower</h3>
+          <p class="small">Formula: <span class="mono">Target manpower = Labor content / TPS Takt Time</span></p>
+
+          <div class="row" style="margin-top: 10px;">
+            <button type="button" onclick="useCh7TaktInTM()">Use TPS Takt Time result</button>
+            <span class="small">(optional)</span>
+          </div>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Labor content (time per unit)</label>
+              <div class="input-with-unit">
+                <input id="ch7TM_LC" type="number" step="any" placeholder="e.g., 6.5">
+                <select id="ch7TM_LC_Unit">
+                  <option value="minutes" selected>minutes / unit</option>
+                  <option value="seconds">seconds / unit</option>
+                  <option value="hours">hours / unit</option>
+                  <option value="days">days / unit</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>TPS Takt Time (time per unit)</label>
+              <div class="input-with-unit">
+                <input id="ch7TM_Takt" type="number" step="any" placeholder="e.g., 3.00">
+                <select id="ch7TM_Takt_Unit">
+                  <option value="minutes" selected>minutes / unit</option>
+                  <option value="seconds">seconds / unit</option>
+                  <option value="hours">hours / unit</option>
+                  <option value="days">days / unit</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7TM()">Compute Target Manpower</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch7TM_Result">-</div>
+            <div class="small" id="ch7TM_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Kanban -->
+        <div class="card">
+          <h3 class="section-title">Kanban Cards</h3>
+          <p class="small">
+            <span class="mono">Demand during replenishment time = Replenishment time × Demand rate</span><br>
+            <span class="mono"># Kanban cards = (Demand during replenishment time + Safety stock) / Container size</span>
+          </p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Replenishment time</label>
+              <div class="input-with-unit">
+                <input id="ch7K_RTime" type="number" step="any" placeholder="e.g., 2">
+                <select id="ch7K_RTime_Unit">
+                  <option value="hours" selected>hours</option>
+                  <option value="minutes">minutes</option>
+                  <option value="days">days</option>
+                  <option value="seconds">seconds</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Demand rate</label>
+              <div class="input-with-unit">
+                <input id="ch7K_Demand" type="number" step="any" placeholder="e.g., 50">
+                <select id="ch7K_Demand_Unit">
+                  <option value="per hour" selected>units / hour</option>
+                  <option value="per minute">units / minute</option>
+                  <option value="per day">units / day</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Safety stock</label>
+              <input id="ch7K_SS" type="number" step="any" placeholder="e.g., 100">
+            </div>
+            <div>
+              <label>Container size</label>
+              <input id="ch7K_Cont" type="number" step="any" placeholder="e.g., 25">
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7Kanban()">Compute Kanban</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Results</div>
+            <div class="result" id="ch7K_DDRT_Result">-</div>
+            <div class="result" id="ch7K_Cards_Result" style="margin-top:10px;">-</div>
+            <div class="small" id="ch7K_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <!-- Value Added Percentage -->
+        <div class="card">
+          <h3 class="section-title">Value-Added Percentage</h3>
+          <p class="small">Formula: <span class="mono">Value-added percentage = Value added time of a flow unit / Flow time</span></p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label>Value added time of a flow unit</label>
+              <div class="input-with-unit">
+                <input id="ch7VAP_VA" type="number" step="any" placeholder="e.g., 12">
+                <select id="ch7VAP_VA_Unit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label>Flow time</label>
+              <div class="input-with-unit">
+                <input id="ch7VAP_FT" type="number" step="any" placeholder="e.g., 60">
+                <select id="ch7VAP_FT_Unit">
+                  <option value="minutes" selected>minutes</option>
+                  <option value="seconds">seconds</option>
+                  <option value="hours">hours</option>
+                  <option value="days">days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runCh7VAP()">Compute Value-Added %</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="ch7VAP_Result">-</div>
+            <div class="small" id="ch7VAP_Conv" style="margin-top:6px;"></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
     <div class="footer">
       <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
       <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
@@ -1007,7 +1406,6 @@
       if (Number.isFinite(v)) decimals = v;
     }
 
-    // Clamp: only allow 0..10 just in case
     decimals = Math.max(0, Math.min(10, decimals));
     return value.toFixed(decimals);
   }
@@ -1042,6 +1440,8 @@
     resetCh3();
     resetCh4();
     resetCh5();
+    resetCh6();
+    resetCh7();
   }
 
   /* -------- General Calculator -------- */
@@ -1918,6 +2318,353 @@
     setText("ch5ReqNote", "");
   }
 
+  /* -------- Chapter 6: Process Interruptions -------- */
+
+  function runCh6Batch() {
+    const tc = parseNum("ch6TC");
+    const setup = parseNum("ch6Setup");
+    const pt = parseNum("ch6PT");
+
+    if (tc === null || setup === null || pt === null) {
+      setText("ch6BatchResult", "Enter target capacity, setup time, and processing time.");
+      clearText("ch6BatchConv");
+      return;
+    }
+    if (!isNonNegative(tc) || !isNonNegative(setup) || !isNonNegative(pt)) {
+      setText("ch6BatchResult", "Inputs must be non-negative.");
+      clearText("ch6BatchConv");
+      return;
+    }
+
+    const tcUnit = document.getElementById("ch6TCUnit").value;      // per hour/min/day
+    const setupUnit = document.getElementById("ch6SetupUnit").value; // time
+    const ptUnit = document.getElementById("ch6PTUnit").value;       // time/unit
+
+    const tc_per_hour = tc * (RATE_TO_PER_HOUR[tcUnit] ?? 1);
+    const setup_hours = setup * (TIME_TO_HOURS[setupUnit] ?? 1);
+    const pt_hours_per_unit = pt * (TIME_TO_HOURS[ptUnit] ?? 1);
+
+    // denominator: 1 - (tc * pt)
+    const denom = 1 - (tc_per_hour * pt_hours_per_unit);
+
+    if (denom <= 0) {
+      setText("ch6BatchResult", "Invalid: 1 − (Target capacity × Processing time) must be > 0.");
+      setText("ch6BatchConv", `Base units: TC=${tc_per_hour.toFixed(6)} units/hour, setup=${setup_hours.toFixed(6)} hours, PT=${pt_hours_per_unit.toFixed(6)} hours/unit.`);
+      return;
+    }
+
+    const batch = (tc_per_hour * setup_hours) / denom;
+    const shown = formatResult(batch, "roundCh6");
+
+    setText("ch6BatchResult", `Batch size = ${shown} units`);
+    setText("ch6BatchConv", `Base units: TC=${tc_per_hour.toFixed(6)} units/hour, setup=${setup_hours.toFixed(6)} hours, PT=${pt_hours_per_unit.toFixed(6)} hours/unit.`);
+  }
+
+  function resetCh6() {
+    document.getElementById("roundCh6").value = "2";
+    document.getElementById("ch6TC").value = "";
+    document.getElementById("ch6TCUnit").value = "per hour";
+    document.getElementById("ch6Setup").value = "";
+    document.getElementById("ch6SetupUnit").value = "minutes";
+    document.getElementById("ch6PT").value = "";
+    document.getElementById("ch6PTUnit").value = "minutes";
+    setText("ch6BatchResult", "-");
+    clearText("ch6BatchConv");
+  }
+
+  /* -------- Chapter 7: Lean / TPS -------- */
+
+  // Store last computed TPS Takt Time in hours/unit (optional helper for Target Manpower)
+  let ch7LastTakt_hours_per_unit = null;
+
+  function runCh7OEE() {
+    const va = parseNum("ch7OEE_VA");
+    const total = parseNum("ch7OEE_Total");
+
+    if (va === null || total === null) {
+      setText("ch7OEE_Result", "Enter value added time and total available time.");
+      clearText("ch7OEE_Conv");
+      return;
+    }
+    if (!isNonNegative(va) || !isNonNegative(total)) {
+      setText("ch7OEE_Result", "Inputs must be non-negative.");
+      clearText("ch7OEE_Conv");
+      return;
+    }
+    if (total === 0) {
+      setText("ch7OEE_Result", "Total available time must be > 0.");
+      clearText("ch7OEE_Conv");
+      return;
+    }
+
+    const vaUnit = document.getElementById("ch7OEE_VA_Unit").value;
+    const totalUnit = document.getElementById("ch7OEE_Total_Unit").value;
+
+    const vaH = va * (TIME_TO_HOURS[vaUnit] ?? 1);
+    const totalH = total * (TIME_TO_HOURS[totalUnit] ?? 1);
+
+    if (totalH === 0) {
+      setText("ch7OEE_Result", "Total available time must be > 0.");
+      clearText("ch7OEE_Conv");
+      return;
+    }
+
+    const oee = vaH / totalH;
+    const pct = oee * 100;
+
+    setText("ch7OEE_Result", `OEE = ${formatResult(pct, "roundCh7")}%`);
+    setText("ch7OEE_Conv", `Base units: VA=${vaH.toFixed(6)} hours, Total=${totalH.toFixed(6)} hours.`);
+  }
+
+  function runCh7ITAT() {
+    const I = parseNum("ch7ITAT_I");
+    const R = parseNum("ch7ITAT_R");
+
+    if (I === null || R === null) {
+      setText("ch7ITAT_Result", "Enter inventory and flow rate.");
+      clearText("ch7ITAT_Conv");
+      return;
+    }
+    if (!isNonNegative(I) || !isNonNegative(R)) {
+      setText("ch7ITAT_Result", "Inputs must be non-negative.");
+      clearText("ch7ITAT_Conv");
+      return;
+    }
+    if (R === 0) {
+      setText("ch7ITAT_Result", "Flow rate must be > 0.");
+      clearText("ch7ITAT_Conv");
+      return;
+    }
+
+    const rUnit = document.getElementById("ch7ITAT_R_Unit").value;
+    const outUnit = document.getElementById("ch7ITAT_OutUnit").value;
+
+    const R_per_hour = R * (RATE_TO_PER_HOUR[rUnit] ?? 1);
+    const itat_hours = I / R_per_hour;
+
+    const itat_out = itat_hours / (TIME_TO_HOURS[outUnit] ?? 1);
+
+    setText("ch7ITAT_Result", `ITAT = ${formatResult(itat_out, "roundCh7")} ${outUnit}`);
+    setText("ch7ITAT_Conv", `Base units: R=${R_per_hour.toFixed(6)} units/hour, ITAT=${itat_hours.toFixed(6)} hours.`);
+  }
+
+  function runCh7Takt() {
+    const avail = parseNum("ch7Takt_Avail");
+    const demand = parseNum("ch7Takt_Demand");
+
+    if (avail === null || demand === null) {
+      setText("ch7Takt_Result", "Enter available time and demand rate.");
+      clearText("ch7Takt_Conv");
+      ch7LastTakt_hours_per_unit = null;
+      return;
+    }
+    if (!isNonNegative(avail) || !isNonNegative(demand)) {
+      setText("ch7Takt_Result", "Inputs must be non-negative.");
+      clearText("ch7Takt_Conv");
+      ch7LastTakt_hours_per_unit = null;
+      return;
+    }
+    if (demand === 0) {
+      setText("ch7Takt_Result", "Demand rate must be > 0.");
+      clearText("ch7Takt_Conv");
+      ch7LastTakt_hours_per_unit = null;
+      return;
+    }
+
+    const aUnit = document.getElementById("ch7Takt_Avail_Unit").value;
+    const dUnit = document.getElementById("ch7Takt_Demand_Unit").value;
+    const outUnit = document.getElementById("ch7Takt_OutUnit").value;
+
+    const availH = avail * (TIME_TO_HOURS[aUnit] ?? 1);
+    const demand_per_hour = demand * (RATE_TO_PER_HOUR[dUnit] ?? 1);
+
+    const takt_hours_per_unit = availH / demand_per_hour;
+    ch7LastTakt_hours_per_unit = takt_hours_per_unit;
+
+    const takt_out = takt_hours_per_unit / (TIME_TO_HOURS[outUnit] ?? 1);
+
+    setText("ch7Takt_Result", `TPS Takt Time = ${formatResult(takt_out, "roundCh7")} ${outUnit}/unit`);
+    setText("ch7Takt_Conv", `Base units: Available=${availH.toFixed(6)} hours, Demand=${demand_per_hour.toFixed(6)} units/hour, Takt=${takt_hours_per_unit.toFixed(6)} hours/unit.`);
+  }
+
+  function useCh7TaktInTM() {
+    if (!Number.isFinite(ch7LastTakt_hours_per_unit)) {
+      setText("ch7TM_Result", "Compute TPS Takt Time first (or enter it manually).");
+      return;
+    }
+    // Fill with minutes/unit by default for convenience
+    const takt_minutes = ch7LastTakt_hours_per_unit / (TIME_TO_HOURS["minutes"] ?? (1/60));
+    document.getElementById("ch7TM_Takt").value = takt_minutes.toFixed(4);
+    document.getElementById("ch7TM_Takt_Unit").value = "minutes";
+  }
+
+  function runCh7TM() {
+    const lc = parseNum("ch7TM_LC");
+    const takt = parseNum("ch7TM_Takt");
+
+    if (lc === null || takt === null) {
+      setText("ch7TM_Result", "Enter labor content and TPS Takt Time.");
+      clearText("ch7TM_Conv");
+      return;
+    }
+    if (!isNonNegative(lc) || !isNonNegative(takt)) {
+      setText("ch7TM_Result", "Inputs must be non-negative.");
+      clearText("ch7TM_Conv");
+      return;
+    }
+    if (takt === 0) {
+      setText("ch7TM_Result", "TPS Takt Time must be > 0.");
+      clearText("ch7TM_Conv");
+      return;
+    }
+
+    const lcUnit = document.getElementById("ch7TM_LC_Unit").value;
+    const taktUnit = document.getElementById("ch7TM_Takt_Unit").value;
+
+    const lcH = lc * (TIME_TO_HOURS[lcUnit] ?? 1);
+    const taktH = takt * (TIME_TO_HOURS[taktUnit] ?? 1);
+
+    const tm = lcH / taktH;
+
+    setText("ch7TM_Result", `Target manpower = ${formatResult(tm, "roundCh7")} workers`);
+    setText("ch7TM_Conv", `Base units: LC=${lcH.toFixed(6)} hours/unit, Takt=${taktH.toFixed(6)} hours/unit.`);
+  }
+
+  function runCh7Kanban() {
+    const rt = parseNum("ch7K_RTime");
+    const demand = parseNum("ch7K_Demand");
+    const ss = parseNum("ch7K_SS");
+    const cont = parseNum("ch7K_Cont");
+
+    if (rt === null || demand === null || ss === null || cont === null) {
+      setText("ch7K_DDRT_Result", "Enter replenishment time, demand rate, safety stock, and container size.");
+      setText("ch7K_Cards_Result", "-");
+      clearText("ch7K_Conv");
+      return;
+    }
+    if (!isNonNegative(rt) || !isNonNegative(demand) || !isNonNegative(ss) || !isNonNegative(cont)) {
+      setText("ch7K_DDRT_Result", "Inputs must be non-negative.");
+      setText("ch7K_Cards_Result", "-");
+      clearText("ch7K_Conv");
+      return;
+    }
+    if (cont === 0) {
+      setText("ch7K_DDRT_Result", "Container size must be > 0.");
+      setText("ch7K_Cards_Result", "-");
+      clearText("ch7K_Conv");
+      return;
+    }
+
+    const rtUnit = document.getElementById("ch7K_RTime_Unit").value;
+    const dUnit = document.getElementById("ch7K_Demand_Unit").value;
+
+    const rtH = rt * (TIME_TO_HOURS[rtUnit] ?? 1);
+    const demand_per_hour = demand * (RATE_TO_PER_HOUR[dUnit] ?? 1);
+
+    const ddrt = rtH * demand_per_hour; // units
+    const cards = (ddrt + ss) / cont;
+
+    setText("ch7K_DDRT_Result", `Demand during replenishment time = ${formatResult(ddrt, "roundCh7")} units`);
+    setText("ch7K_Cards_Result", `Number of Kanban cards = ${formatResult(cards, "roundCh7")} cards`);
+    setText("ch7K_Conv", `Base units: RT=${rtH.toFixed(6)} hours, Demand=${demand_per_hour.toFixed(6)} units/hour, DDRT=${ddrt.toFixed(6)} units.`);
+  }
+
+  function runCh7VAP() {
+    const va = parseNum("ch7VAP_VA");
+    const ft = parseNum("ch7VAP_FT");
+
+    if (va === null || ft === null) {
+      setText("ch7VAP_Result", "Enter value added time and flow time.");
+      clearText("ch7VAP_Conv");
+      return;
+    }
+    if (!isNonNegative(va) || !isNonNegative(ft)) {
+      setText("ch7VAP_Result", "Inputs must be non-negative.");
+      clearText("ch7VAP_Conv");
+      return;
+    }
+    if (ft === 0) {
+      setText("ch7VAP_Result", "Flow time must be > 0.");
+      clearText("ch7VAP_Conv");
+      return;
+    }
+
+    const vaUnit = document.getElementById("ch7VAP_VA_Unit").value;
+    const ftUnit = document.getElementById("ch7VAP_FT_Unit").value;
+
+    const vaH = va * (TIME_TO_HOURS[vaUnit] ?? 1);
+    const ftH = ft * (TIME_TO_HOURS[ftUnit] ?? 1);
+
+    if (ftH === 0) {
+      setText("ch7VAP_Result", "Flow time must be > 0.");
+      clearText("ch7VAP_Conv");
+      return;
+    }
+
+    const vap = vaH / ftH;
+    const pct = vap * 100;
+
+    setText("ch7VAP_Result", `Value-added percentage = ${formatResult(pct, "roundCh7")}%`);
+    setText("ch7VAP_Conv", `Base units: VA=${vaH.toFixed(6)} hours, Flow time=${ftH.toFixed(6)} hours.`);
+  }
+
+  function resetCh7() {
+    document.getElementById("roundCh7").value = "2";
+
+    // OEE
+    document.getElementById("ch7OEE_VA").value = "";
+    document.getElementById("ch7OEE_VA_Unit").value = "minutes";
+    document.getElementById("ch7OEE_Total").value = "";
+    document.getElementById("ch7OEE_Total_Unit").value = "minutes";
+    setText("ch7OEE_Result", "-");
+    clearText("ch7OEE_Conv");
+
+    // ITAT
+    document.getElementById("ch7ITAT_OutUnit").value = "minutes";
+    document.getElementById("ch7ITAT_I").value = "";
+    document.getElementById("ch7ITAT_R").value = "";
+    document.getElementById("ch7ITAT_R_Unit").value = "per hour";
+    setText("ch7ITAT_Result", "-");
+    clearText("ch7ITAT_Conv");
+
+    // Takt
+    document.getElementById("ch7Takt_OutUnit").value = "minutes";
+    document.getElementById("ch7Takt_Avail").value = "";
+    document.getElementById("ch7Takt_Avail_Unit").value = "minutes";
+    document.getElementById("ch7Takt_Demand").value = "";
+    document.getElementById("ch7Takt_Demand_Unit").value = "per hour";
+    setText("ch7Takt_Result", "-");
+    clearText("ch7Takt_Conv");
+    ch7LastTakt_hours_per_unit = null;
+
+    // Target manpower
+    document.getElementById("ch7TM_LC").value = "";
+    document.getElementById("ch7TM_LC_Unit").value = "minutes";
+    document.getElementById("ch7TM_Takt").value = "";
+    document.getElementById("ch7TM_Takt_Unit").value = "minutes";
+    setText("ch7TM_Result", "-");
+    clearText("ch7TM_Conv");
+
+    // Kanban
+    document.getElementById("ch7K_RTime").value = "";
+    document.getElementById("ch7K_RTime_Unit").value = "hours";
+    document.getElementById("ch7K_Demand").value = "";
+    document.getElementById("ch7K_Demand_Unit").value = "per hour";
+    document.getElementById("ch7K_SS").value = "";
+    document.getElementById("ch7K_Cont").value = "";
+    setText("ch7K_DDRT_Result", "-");
+    setText("ch7K_Cards_Result", "-");
+    clearText("ch7K_Conv");
+
+    // VAP
+    document.getElementById("ch7VAP_VA").value = "";
+    document.getElementById("ch7VAP_VA_Unit").value = "minutes";
+    document.getElementById("ch7VAP_FT").value = "";
+    document.getElementById("ch7VAP_FT_Unit").value = "minutes";
+    setText("ch7VAP_Result", "-");
+    clearText("ch7VAP_Conv");
+  }
+
   /* -------- Accordion behavior (only one open at a time) -------- */
   document.querySelectorAll("details.calc").forEach(d => {
     d.addEventListener("toggle", () => {
@@ -1934,6 +2681,8 @@
   resetCh3();
   resetCh4();
   resetCh5();
+  resetCh6();
+  resetCh7();
 </script>
 </body>
 </html>
