@@ -1,463 +1,681 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>OTM 300 Calculators — Page 2</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OTM 300 Calculators — Page 2</title>
 
-<style>
+  <meta name="copyright" content="© 2026 Amir. All rights reserved.">
+  <meta name="description" content="OTM 300 Calculator Page 2: Enhanced general calculator, statistical tools, and Chapter 8 inventory management formulas.">
 
-* { box-sizing: border-box; }
+  <style>
+    * { box-sizing: border-box; }
 
-body{
-font-family: Arial, sans-serif;
-margin:24px;
-line-height:1.35;
-}
+    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { margin-bottom: 8px; }
+    .note { color: #444; margin-top: 0; }
 
-.container{
-max-width:900px;
-margin:auto;
-}
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid > * { min-width: 0; }
 
-h1{
-margin-bottom:8px;
-}
+    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
 
-.note{
-color:#444;
-margin-top:0;
-}
+    textarea { min-height: 90px; resize: vertical; }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-}
+    button {
+      padding: 10px 14px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      background: #f7f7f7;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #eee; }
 
-.grid.tight{
-grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-}
+    .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+    .result {
+      font-size: 18px;
+      font-weight: 700;
+      padding: 10px;
+      background: #fafafa;
+      border: 1px dashed #bbb;
+      border-radius: 8px;
+    }
+    .small { font-size: 13px; color: #555; }
 
-label{
-display:block;
-font-weight:600;
-margin-bottom:4px;
-}
+    details.calc {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin: 12px 0;
+      background: #fff;
+    }
 
-input,select,textarea{
-width:100%;
-padding:10px;
-border:1px solid #ccc;
-border-radius:8px;
-font-size:16px;
-font-family:inherit;
-}
+    details.calc > summary {
+      padding: 14px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      list-style: none;
+      user-select: none;
+    }
 
-textarea{
-min-height:90px;
-resize:vertical;
-}
+    details.calc > summary::-webkit-details-marker { display: none; }
 
-button{
-padding:10px 14px;
-border:1px solid #aaa;
-border-radius:8px;
-background:#f7f7f7;
-cursor:pointer;
-font-size:16px;
-}
+    details.calc > summary::before {
+      content: "▶";
+      display: inline-block;
+      width: 22px;
+      margin-right: 6px;
+      transform: translateY(-1px);
+    }
 
-button:hover{
-background:#eee;
-}
+    details.calc[open] > summary::before { content: "▼"; }
 
-.row{
-display:flex;
-gap:10px;
-align-items:end;
-flex-wrap:wrap;
-}
+    details.calc .content { padding: 0 16px 16px 16px; }
 
-.result{
-font-size:18px;
-font-weight:700;
-padding:10px;
-background:#fafafa;
-border:1px dashed #bbb;
-border-radius:8px;
-}
+    .section-title { margin: 12px 0 6px 0; }
 
-.small{
-font-size:13px;
-color:#555;
-}
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
 
-details.calc{
-border:1px solid #ddd;
-border-radius:10px;
-margin:12px 0;
-background:#fff;
-}
+    .footer {
+      margin-top: 22px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+      color: #666;
+      font-size: 12px;
+      line-height: 1.4;
+    }
 
-details.calc>summary{
-padding:14px 16px;
-cursor:pointer;
-font-weight:700;
-list-style:none;
-}
+    .tbl-wrap { overflow-x: auto; }
+    table.tbl {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .tbl th, .tbl td {
+      padding: 10px 10px;
+      border-bottom: 1px solid #f1f1f1;
+      text-align: left;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .tbl th { background: #fafafa; font-weight: 700; }
+    .tbl tr:last-child td { border-bottom: none; }
 
-details.calc>summary::-webkit-details-marker{
-display:none;
-}
+    .card {
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+      margin-top: 10px;
+    }
 
-details.calc>summary::before{
-content:"▶";
-display:inline-block;
-width:22px;
-margin-right:6px;
-}
+    .warn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #f0e3b0;
+      background: #fff9e6;
+      color: #5a4b00;
+      font-size: 13px;
+      margin-top: 10px;
+    }
 
-details.calc[open]>summary::before{
-content:"▼";
-}
+    .navbox {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 18px 0;
+    }
 
-details.calc .content{
-padding:0 16px 16px 16px;
-}
+    .navlink {
+      display: inline-block;
+      padding: 10px 14px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      background: #f7f7f7;
+      color: #000;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .navlink:hover { background: #eee; }
 
-.card{
-border:1px solid #eee;
-border-radius:10px;
-padding:12px;
-background:#fff;
-margin-top:10px;
-}
-
-.warn{
-padding:10px 12px;
-border-radius:10px;
-border:1px solid #f0e3b0;
-background:#fff9e6;
-color:#5a4b00;
-font-size:13px;
-margin-top:10px;
-}
-
-.navbox{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin:12px 0 18px 0;
-}
-
-.navlink{
-display:inline-block;
-padding:10px 14px;
-border:1px solid #aaa;
-border-radius:8px;
-background:#f7f7f7;
-color:#000;
-text-decoration:none;
-}
-
-.navlink:hover{
-background:#eee;
-}
-
-.tbl{
-width:100%;
-border-collapse:collapse;
-margin-top:8px;
-}
-
-.tbl th,.tbl td{
-padding:10px;
-border-bottom:1px solid #eee;
-text-align:left;
-}
-
-.footer{
-margin-top:22px;
-padding-top:12px;
-border-top:1px solid #eee;
-color:#666;
-font-size:12px;
-}
-
-</style>
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="container">
-
-<h1>OTM 300 Calculators — Page 2</h1>
-
-<p class="note">
-Use this page during exams for statistical tools and Chapter 8 formulas.
-</p>
-
-<div class="navbox">
-<a class="navlink" href="index.html">← Back to Main Calculator</a>
-</div>
-
-<!-- Statistical Tools -->
-
-<details class="calc" open>
-<summary>Statistical Tools</summary>
-
-<div class="content">
-
-<div class="card">
-
-<h3>Z-score from Service Level</h3>
-
-<label>Service Level</label>
-<input id="slInput" type="number" step="any" placeholder="0.95">
-
-<div class="row" style="margin-top:10px;">
-<button onclick="calcZ()">Compute Z</button>
-</div>
-
-<div class="result" id="zResult">-</div>
-
-</div>
-
-<div class="card">
-
-<h3>Service Level from Z-score</h3>
-
-<label>Z-score</label>
-<input id="zInput" type="number" step="any">
-
-<div class="row" style="margin-top:10px;">
-<button onclick="calcSL()">Compute Service Level</button>
-</div>
-
-<div class="result" id="slResult">-</div>
-
-</div>
-
-<div class="card">
-
-<h3>Standardization Tool</h3>
-
-<p class="small">z = (x − mean) / standard deviation</p>
-
-<div class="grid">
-
-<div>
-<label>x</label>
-<input id="xVal" type="number">
-</div>
-
-<div>
-<label>Mean</label>
-<input id="meanVal" type="number">
-</div>
-
-<div>
-<label>Std Dev</label>
-<input id="sdVal" type="number">
-</div>
-
-</div>
-
-<div class="row" style="margin-top:10px;">
-<button onclick="calcStandard()">Compute</button>
-</div>
-
-<div class="result" id="stdResult">-</div>
-
-</div>
-
-</div>
-</details>
-
-<!-- Chapter 8 -->
-
-<details class="calc">
-<summary>8. Intro to Inventory Management</summary>
-
-<div class="content">
-
-<div class="warn">
-Use the calculator tools above to compute results. This section lists formulas only.
-</div>
-
-<div class="card">
-
-<h3>Chapter 8 Formulas</h3>
-
-<p class="small">
-
-Inventory Turns = Flow Rate / Inventory<br><br>
-
-Inventory Turns = COGS / Average Inventory<br><br>
-
-Days of Supply = Inventory / Flow Rate<br><br>
-
-Days of Supply = 365 / Turns<br><br>
-
-Turns = 365 / Days of Supply<br><br>
-
-Annual Holding Cost = Unit Cost × Holding Cost Rate
-
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>Variables and Key Reminders</h3>
-
-<table class="tbl">
-
-<tr>
-<th>Symbol / Term</th>
-<th>Meaning</th>
-</tr>
-
-<tr>
-<td>Flow Rate (R)</td>
-<td>Units flowing through the system per unit time</td>
-</tr>
-
-<tr>
-<td>COGS</td>
-<td>Cost of Goods Sold</td>
-</tr>
-
-<tr>
-<td>Average Inventory (I)</td>
-<td>Average inventory level in the system</td>
-</tr>
-
-<tr>
-<td>Turns</td>
-<td>How many times inventory flows through the system in a year</td>
-</tr>
-
-<tr>
-<td>Days of Supply</td>
-<td>How long inventory stays in the system</td>
-</tr>
-
-<tr>
-<td>Unit Cost</td>
-<td>Purchase or production cost per unit</td>
-</tr>
-
-<tr>
-<td>Holding Cost Rate</td>
-<td>Annual holding cost as a percentage of unit cost</td>
-</tr>
-
-</table>
-
-<div class="warn">
-
-When inventory is measured in <strong>cost dollars</strong>, use
-<strong>COGS</strong> (not revenue) as the flow rate when calculating
-inventory turns or days of supply.
-
-</div>
-
-</div>
-
-</div>
-</details>
-
-<div class="footer">
-© 2026 Amir Fard Bahreini — OTM 300 Calculators
-</div>
-
-</div>
+  <div class="container">
+    <h1>OTM 300 Calculators — Page 2</h1>
+    <p class="note"><strong>Exam note:</strong> You may use this entire page during the exam session. This page does not store data. Refreshing resets values.</p>
+
+    <div class="navbox">
+      <a class="navlink" href="index.html">← Back to Main Calculator Page</a>
+      <button type="button" onclick="openAll()">Expand all</button>
+      <button type="button" onclick="closeAll()">Collapse all</button>
+      <button type="button" onclick="resetAll()">Reset all</button>
+    </div>
+
+    <details class="calc" open>
+      <summary>Enhanced General Calculator</summary>
+      <div class="content">
+        <p class="small">Supports arithmetic, parentheses, decimals, %, powers, roots, logs, abs, reciprocal, π, and e.</p>
+
+        <div style="max-width: 620px;">
+          <label for="expr">Expression</label>
+          <input id="expr" type="text" inputmode="decimal" placeholder="e.g., sqrt(225) + ln(2) + 0.95*100" />
+
+          <div class="row" style="margin-top: 10px;">
+            <button type="button" onclick="appendExpr('(')">(</button>
+            <button type="button" onclick="appendExpr(')')">)</button>
+            <button type="button" onclick="appendExpr('%')">%</button>
+            <button type="button" onclick="appendExpr('pi')">π</button>
+            <button type="button" onclick="appendExpr('e')">e</button>
+            <button type="button" onclick="backspaceExpr()">⌫</button>
+            <button type="button" onclick="clearExpr()">AC</button>
+          </div>
+
+          <div class="grid" style="margin-top: 10px; grid-template-columns: repeat(5, 1fr);">
+            <button type="button" onclick="appendExpr('7')">7</button>
+            <button type="button" onclick="appendExpr('8')">8</button>
+            <button type="button" onclick="appendExpr('9')">9</button>
+            <button type="button" onclick="appendExpr('/')">÷</button>
+            <button type="button" onclick="appendExpr('sqrt(')">√x</button>
+
+            <button type="button" onclick="appendExpr('4')">4</button>
+            <button type="button" onclick="appendExpr('5')">5</button>
+            <button type="button" onclick="appendExpr('6')">6</button>
+            <button type="button" onclick="appendExpr('*')">×</button>
+            <button type="button" onclick="appendExpr('^')">xʸ</button>
+
+            <button type="button" onclick="appendExpr('1')">1</button>
+            <button type="button" onclick="appendExpr('2')">2</button>
+            <button type="button" onclick="appendExpr('3')">3</button>
+            <button type="button" onclick="appendExpr('-')">−</button>
+            <button type="button" onclick="appendExpr('^2')">x²</button>
+
+            <button type="button" onclick="appendExpr('0')">0</button>
+            <button type="button" onclick="appendExpr('.')">.</button>
+            <button type="button" onclick="computeExpr()" style="font-weight:700;">=</button>
+            <button type="button" onclick="appendExpr('+')">+</button>
+            <button type="button" onclick="appendExpr('1/(')">1/x</button>
+          </div>
+
+          <div class="row" style="margin-top: 10px;">
+            <button type="button" onclick="appendExpr('abs(')">abs</button>
+            <button type="button" onclick="appendExpr('ln(')">ln</button>
+            <button type="button" onclick="appendExpr('log(')">log10</button>
+          </div>
+
+          <div style="margin-top: 12px;">
+            <div class="small">Result</div>
+            <div class="result" id="exprResult">-</div>
+          </div>
+
+          <div class="warn" style="margin-top:10px;">
+            Supported functions: <span class="mono">sqrt(x), abs(x), ln(x), log(x)</span><br>
+            Use <span class="mono">^</span> for powers, for example <span class="mono">12^2</span> or <span class="mono">25^(1/2)</span>.
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="calc">
+      <summary>Statistical Tools</summary>
+      <div class="content">
+
+        <div class="card">
+          <h3 class="section-title">Z-Score from Service Level</h3>
+          <p class="small">Input a cumulative probability / service level as a decimal, such as 0.90, 0.95, or 0.99.</p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label for="slInput">Service level / probability</label>
+              <input id="slInput" type="number" step="any" placeholder="e.g., 0.95">
+            </div>
+            <div>
+              <label for="roundStats1">Rounding</label>
+              <select id="roundStats1">
+                <option value="4" selected>Round to 4 decimals</option>
+                <option value="2">Round to 2 decimals</option>
+                <option value="6">Round to 6 decimals</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runZFromSL()">Compute z-score</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="zFromSLResult">-</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Service Level from Z-Score</h3>
+          <p class="small">Input a z-score to find the cumulative probability / service level.</p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label for="zInput">z-score</label>
+              <input id="zInput" type="number" step="any" placeholder="e.g., 1.645">
+            </div>
+            <div>
+              <label for="roundStats2">Rounding</label>
+              <select id="roundStats2">
+                <option value="4" selected>Round to 4 decimals</option>
+                <option value="2">Round to 2 decimals</option>
+                <option value="6">Round to 6 decimals</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runSLFromZ()">Compute service level</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="slFromZResult">-</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Standardization Tool</h3>
+          <p class="small">Formula: <span class="mono">z = (x − mean) / standard deviation</span></p>
+
+          <div class="grid" style="margin-top: 12px;">
+            <div>
+              <label for="stdX">x</label>
+              <input id="stdX" type="number" step="any" placeholder="e.g., 120">
+            </div>
+            <div>
+              <label for="stdMean">Mean</label>
+              <input id="stdMean" type="number" step="any" placeholder="e.g., 100">
+            </div>
+            <div>
+              <label for="stdSD">Standard deviation</label>
+              <input id="stdSD" type="number" step="any" placeholder="e.g., 15">
+            </div>
+            <div>
+              <label for="roundStats3">Rounding</label>
+              <select id="roundStats3">
+                <option value="4" selected>Round to 4 decimals</option>
+                <option value="2">Round to 2 decimals</option>
+                <option value="6">Round to 6 decimals</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runStandardize()">Compute z-score</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Result</div>
+            <div class="result" id="standardizeResult">-</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Mean and Standard Deviation Helper</h3>
+          <p class="small">Enter numbers separated by commas. Example: <span class="mono">10, 12, 15, 20, 23</span></p>
+
+          <label for="dataList">Data</label>
+          <textarea id="dataList" placeholder="e.g., 10, 12, 15, 20, 23"></textarea>
+
+          <div class="row" style="margin-top: 12px;">
+            <button type="button" onclick="runDataStats()">Compute statistics</button>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <div class="small">Results</div>
+            <div class="result" id="dataStatsResult">-</div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="calc">
+      <summary>8. Intro to Inventory Management</summary>
+      <div class="content">
+        <div class="warn">
+          This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above to compute answers.
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Chapter 8 Formulas</h3>
+          <p class="small">
+            <span class="mono">Inventory Turns = Flow Rate / Inventory</span><br>
+            <span class="mono">Days of Supply = Inventory / Flow Rate</span><br>
+            <span class="mono">Annual Holding Cost = Unit Cost × Holding Cost Rate</span>
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <div class="footer">
+      <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
+      <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
+    </div>
+  </div>
 
 <script>
+  function setText(id, txt) {
+    document.getElementById(id).textContent = txt;
+  }
 
-function erf(x){
+  function openAll() {
+    document.querySelectorAll("details.calc").forEach(d => d.open = true);
+  }
 
-const sign = x >= 0 ? 1 : -1;
+  function closeAll() {
+    document.querySelectorAll("details.calc").forEach(d => d.open = false);
+  }
 
-x = Math.abs(x);
+  function resetAll() {
+    clearExpr();
+    resetStats();
+  }
 
-const a1 = 0.254829592;
-const a2 = -0.284496736;
-const a3 = 1.421413741;
-const a4 = -1.453152027;
-const a5 = 1.061405429;
-const p = 0.3275911;
+  function appendExpr(s) {
+    const el = document.getElementById("expr");
+    el.value = (el.value || "") + s;
+    el.focus();
+  }
 
-const t = 1/(1+p*x);
+  function backspaceExpr() {
+    const el = document.getElementById("expr");
+    el.value = (el.value || "").slice(0, -1);
+    el.focus();
+  }
 
-const y = 1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  function clearExpr() {
+    document.getElementById("expr").value = "";
+    document.getElementById("exprResult").textContent = "-";
+  }
 
-return sign*y;
+  function transformExpression(raw) {
+    let expr = raw.trim();
 
-}
+    expr = expr.replace(/(\d+(\.\d+)?)\s*%/g, "($1/100)");
+    expr = expr.replace(/\bpi\b/g, "Math.PI");
+    expr = expr.replace(/\be\b/g, "Math.E");
+    expr = expr.replace(/\bsqrt\s*\(/g, "Math.sqrt(");
+    expr = expr.replace(/\babs\s*\(/g, "Math.abs(");
+    expr = expr.replace(/\bln\s*\(/g, "Math.log(");
+    expr = expr.replace(/\blog\s*\(/g, "Math.log10(");
+    expr = expr.replace(/\^/g, "**");
 
-function normalCDF(z){
+    return expr;
+  }
 
-return 0.5*(1+erf(z/Math.sqrt(2)));
+  function computeExpr() {
+    const raw = (document.getElementById("expr").value || "").trim();
+    if (!raw) {
+      setText("exprResult", "Enter an expression.");
+      return;
+    }
 
-}
+    if (!/^[0-9+\-*/().,%\s^a-zA-Z]+$/.test(raw)) {
+      setText("exprResult", "Invalid characters.");
+      return;
+    }
 
-function inverseNormalCDF(p){
+    const transformed = transformExpression(raw);
 
-let low=-10;
-let high=10;
-let mid;
+    try {
+      const val = Function(`"use strict"; return (${transformed});`)();
+      if (!Number.isFinite(val)) {
+        setText("exprResult", "Result undefined.");
+        return;
+      }
+      setText("exprResult", String(val));
+    } catch (e) {
+      setText("exprResult", "Check your expression.");
+    }
+  }
 
-for(let i=0;i<100;i++){
+  document.addEventListener("keydown", (e) => {
+    const active = document.activeElement;
+    if (active && active.id === "expr" && e.key === "Enter") {
+      e.preventDefault();
+      computeExpr();
+    }
+  });
 
-mid=(low+high)/2;
+  function parseNum(id) {
+    const v = document.getElementById(id).value;
+    if (v === "" || v === null) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
 
-if(normalCDF(mid)<p)
-low=mid;
-else
-high=mid;
+  function formatWith(decimals, value) {
+    if (!Number.isFinite(value)) return String(value);
+    const d = Math.max(0, Math.min(10, Number(decimals) || 4));
+    return value.toFixed(d);
+  }
 
-}
+  function erf(x) {
+    const sign = x >= 0 ? 1 : -1;
+    x = Math.abs(x);
 
-return mid;
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p = 0.3275911;
 
-}
+    const t = 1 / (1 + p * x);
+    const y = 1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x));
+    return sign * y;
+  }
 
-function calcZ(){
+  function normalCDF(z) {
+    return 0.5 * (1 + erf(z / Math.sqrt(2)));
+  }
 
-let p=parseFloat(document.getElementById("slInput").value);
+  function inverseNormalCDF(p) {
+    if (!(p > 0 && p < 1)) return NaN;
 
-let z=inverseNormalCDF(p);
+    const a = [
+      -3.969683028665376e+01,
+       2.209460984245205e+02,
+      -2.759285104469687e+02,
+       1.383577518672690e+02,
+      -3.066479806614716e+01,
+       2.506628277459239e+00
+    ];
 
-document.getElementById("zResult").innerText=z.toFixed(4);
+    const b = [
+      -5.447609879822406e+01,
+       1.615858368580409e+02,
+      -1.556989798598866e+02,
+       6.680131188771972e+01,
+      -1.328068155288572e+01
+    ];
 
-}
+    const c = [
+      -7.784894002430293e-03,
+      -3.223964580411365e-01,
+      -2.400758277161838e+00,
+      -2.549732539343734e+00,
+       4.374664141464968e+00,
+       2.938163982698783e+00
+    ];
 
-function calcSL(){
+    const d = [
+       7.784695709041462e-03,
+       3.224671290700398e-01,
+       2.445134137142996e+00,
+       3.754408661907416e+00
+    ];
 
-let z=parseFloat(document.getElementById("zInput").value);
+    const plow = 0.02425;
+    const phigh = 1 - plow;
+    let q, r;
 
-let p=normalCDF(z);
+    if (p < plow) {
+      q = Math.sqrt(-2 * Math.log(p));
+      return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+             ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    }
 
-document.getElementById("slResult").innerText=p.toFixed(4);
+    if (phigh < p) {
+      q = Math.sqrt(-2 * Math.log(1 - p));
+      return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+               ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    }
 
-}
+    q = p - 0.5;
+    r = q * q;
+    return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+           (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  }
 
-function calcStandard(){
+  function runZFromSL() {
+    const p = parseNum("slInput");
+    const d = document.getElementById("roundStats1").value;
 
-let x=parseFloat(document.getElementById("xVal").value);
-let mean=parseFloat(document.getElementById("meanVal").value);
-let sd=parseFloat(document.getElementById("sdVal").value);
+    if (p === null) {
+      setText("zFromSLResult", "Enter a service level.");
+      return;
+    }
+    if (!(p > 0 && p < 1)) {
+      setText("zFromSLResult", "Service level must be between 0 and 1.");
+      return;
+    }
 
-let z=(x-mean)/sd;
+    const z = inverseNormalCDF(p);
+    setText("zFromSLResult", `z = ${formatWith(d, z)}`);
+  }
 
-document.getElementById("stdResult").innerText=z.toFixed(4);
+  function runSLFromZ() {
+    const z = parseNum("zInput");
+    const d = document.getElementById("roundStats2").value;
 
-}
+    if (z === null) {
+      setText("slFromZResult", "Enter a z-score.");
+      return;
+    }
 
+    const p = normalCDF(z);
+    setText("slFromZResult", `Service level = ${formatWith(d, p)} (${formatWith(2, p * 100)}%)`);
+  }
+
+  function runStandardize() {
+    const x = parseNum("stdX");
+    const mean = parseNum("stdMean");
+    const sd = parseNum("stdSD");
+    const d = document.getElementById("roundStats3").value;
+
+    if (x === null || mean === null || sd === null) {
+      setText("standardizeResult", "Enter x, mean, and standard deviation.");
+      return;
+    }
+    if (!(sd > 0)) {
+      setText("standardizeResult", "Standard deviation must be > 0.");
+      return;
+    }
+
+    const z = (x - mean) / sd;
+    setText("standardizeResult", `z = ${formatWith(d, z)}`);
+  }
+
+  function parseDataList(text) {
+    return text
+      .split(/[\s,]+/)
+      .map(s => s.trim())
+      .filter(s => s !== "")
+      .map(Number)
+      .filter(n => Number.isFinite(n));
+  }
+
+  function mean(arr) {
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+
+  function sampleSD(arr) {
+    if (arr.length < 2) return NaN;
+    const m = mean(arr);
+    const sumSq = arr.reduce((acc, v) => acc + (v - m) ** 2, 0);
+    return Math.sqrt(sumSq / (arr.length - 1));
+  }
+
+  function populationSD(arr) {
+    if (arr.length < 1) return NaN;
+    const m = mean(arr);
+    const sumSq = arr.reduce((acc, v) => acc + (v - m) ** 2, 0);
+    return Math.sqrt(sumSq / arr.length);
+  }
+
+  function runDataStats() {
+    const raw = document.getElementById("dataList").value || "";
+    const arr = parseDataList(raw);
+
+    if (arr.length === 0) {
+      setText("dataStatsResult", "Enter at least one valid number.");
+      return;
+    }
+
+    const m = mean(arr);
+    const sSample = sampleSD(arr);
+    const sPop = populationSD(arr);
+
+    let out = `n = ${arr.length} | Mean = ${formatWith(4, m)}`;
+    out += ` | Sample SD = ${Number.isFinite(sSample) ? formatWith(4, sSample) : "N/A"}`;
+    out += ` | Population SD = ${Number.isFinite(sPop) ? formatWith(4, sPop) : "N/A"}`;
+
+    setText("dataStatsResult", out);
+  }
+
+  function resetStats() {
+    document.getElementById("slInput").value = "";
+    document.getElementById("roundStats1").value = "4";
+    setText("zFromSLResult", "-");
+
+    document.getElementById("zInput").value = "";
+    document.getElementById("roundStats2").value = "4";
+    setText("slFromZResult", "-");
+
+    document.getElementById("stdX").value = "";
+    document.getElementById("stdMean").value = "";
+    document.getElementById("stdSD").value = "";
+    document.getElementById("roundStats3").value = "4";
+    setText("standardizeResult", "-");
+
+    document.getElementById("dataList").value = "";
+    setText("dataStatsResult", "-");
+  }
+
+  document.querySelectorAll("details.calc").forEach(d => {
+    d.addEventListener("toggle", () => {
+      if (d.open) {
+        document.querySelectorAll("details.calc").forEach(other => {
+          if (other !== d) other.open = false;
+        });
+      }
+    });
+  });
 </script>
-
 </body>
 </html>
