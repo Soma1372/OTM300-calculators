@@ -3,23 +3,61 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OTM 300 Calculators — Page 2</title>
+  <title>OTM Calculator 2.0</title>
 
   <meta name="copyright" content="© 2026 Amir. All rights reserved.">
-  <meta name="description" content="OTM 300 Calculator Page 2: Enhanced general calculator, statistical tools, and Chapter 8 and Chapter 9 formula lists.">
+  <meta name="description" content="OTM Calculator 2.0: Enhanced general calculator, statistical tools, Chapter 8 and Chapter 9 formula lists, and a built-in scrap paper panel.">
 
   <style>
     * { box-sizing: border-box; }
 
-    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.35; }
-    .container { max-width: 900px; margin: 0 auto; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      line-height: 1.35;
+      background: #fcfcfc;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
     h1 { margin-bottom: 8px; }
     .note { color: #444; margin-top: 0; }
 
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .calculator-area,
+    .scrap-area {
+      min-width: 0;
+    }
+
+    .scrap-area {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     .grid > * { min-width: 0; }
 
-    label { display: block; font-weight: 600; margin-bottom: 4px; }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
     input, select, textarea {
       width: 100%;
       padding: 10px;
@@ -28,9 +66,13 @@
       font-size: 16px;
       box-sizing: border-box;
       font-family: inherit;
+      background: #fff;
     }
 
-    textarea { min-height: 90px; resize: vertical; }
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
 
     button {
       padding: 10px 14px;
@@ -40,9 +82,16 @@
       cursor: pointer;
       font-size: 16px;
     }
+
     button:hover { background: #eee; }
 
-    .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
     .result {
       font-size: 18px;
       font-weight: 700;
@@ -51,6 +100,7 @@
       border: 1px dashed #bbb;
       border-radius: 8px;
     }
+
     .small { font-size: 13px; color: #555; }
 
     details.calc {
@@ -80,9 +130,13 @@
 
     details.calc[open] > summary::before { content: "▼"; }
 
-    details.calc .content { padding: 0 16px 16px 16px; }
+    details.calc .content {
+      padding: 0 16px 16px 16px;
+    }
 
-    .section-title { margin: 12px 0 6px 0; }
+    .section-title {
+      margin: 12px 0 6px 0;
+    }
 
     .mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -98,6 +152,7 @@
     }
 
     .tbl-wrap { overflow-x: auto; }
+
     table.tbl {
       width: 100%;
       border-collapse: collapse;
@@ -106,6 +161,7 @@
       border-radius: 10px;
       overflow: hidden;
     }
+
     .tbl th, .tbl td {
       padding: 10px 10px;
       border-bottom: 1px solid #f1f1f1;
@@ -113,7 +169,12 @@
       vertical-align: middle;
       overflow: hidden;
     }
-    .tbl th { background: #fafafa; font-weight: 700; }
+
+    .tbl th {
+      background: #fafafa;
+      font-weight: 700;
+    }
+
     .tbl tr:last-child td { border-bottom: none; }
 
     .card {
@@ -151,18 +212,97 @@
       text-decoration: none;
       font-size: 16px;
     }
+
     .navlink:hover { background: #eee; }
+
+    .scrap-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: #fff;
+      padding: 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .scrap-title {
+      margin: 0 0 6px 0;
+      font-size: 20px;
+    }
+
+    .scrap-subtitle {
+      margin: 0 0 12px 0;
+      color: #555;
+      font-size: 13px;
+    }
+
+    #scrapPad {
+      min-height: 420px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .quick-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quick-buttons button {
+      width: 100%;
+      text-align: left;
+      font-size: 14px;
+      padding: 9px 10px;
+    }
+
+    .scrap-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .scrap-actions button {
+      flex: 1 1 auto;
+      min-width: 120px;
+    }
+
+    .subtle-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      background: #fafafa;
+      color: #555;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 900px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .scrap-area {
+        position: static;
+      }
+
+      #scrapPad {
+        min-height: 260px;
+      }
+    }
 
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
+      .quick-buttons { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>OTM 300 Calculators — Page 2</h1>
-    <p class="note"><strong>Exam note:</strong> You may use this entire page during the exam session. This page does not store data. Refreshing resets values.</p>
+    <h1>OTM Calculator 2.0</h1>
+    <p class="note"><strong>Exam note:</strong> You may use this entire page during the exam session. This page does not store calculator values permanently. Scrap Paper saves only in your browser on this device until you clear it.</p>
 
     <div class="navbox">
       <a class="navlink" href="index.html">← Back to Main Calculator Page</a>
@@ -171,229 +311,275 @@
       <button type="button" onclick="resetAll()">Reset all</button>
     </div>
 
-    <details class="calc" open>
-      <summary>Enhanced General Calculator</summary>
-      <div class="content">
-        <p class="small">Supports arithmetic, parentheses, decimals, %, powers, roots, logs, abs, reciprocal, π, and e.</p>
+    <div class="main-layout">
+      <div class="calculator-area">
+        <details class="calc" open>
+          <summary>Enhanced General Calculator</summary>
+          <div class="content">
+            <p class="small">Supports arithmetic, parentheses, decimals, %, powers, roots, logs, abs, reciprocal, π, and e.</p>
 
-        <div style="max-width: 620px;">
-          <label for="expr">Expression</label>
-          <input id="expr" type="text" inputmode="decimal" placeholder="e.g., sqrt(225) + ln(2) + 0.95*100" />
+            <div style="max-width: 620px;">
+              <label for="expr">Expression</label>
+              <input id="expr" type="text" inputmode="decimal" placeholder="e.g., sqrt(225) + ln(2) + 0.95*100" />
 
-          <div class="row" style="margin-top: 10px;">
-            <button type="button" onclick="appendExpr('(')">(</button>
-            <button type="button" onclick="appendExpr(')')">)</button>
-            <button type="button" onclick="appendExpr('%')">%</button>
-            <button type="button" onclick="appendExpr('pi')">π</button>
-            <button type="button" onclick="appendExpr('e')">e</button>
-            <button type="button" onclick="backspaceExpr()">⌫</button>
-            <button type="button" onclick="clearExpr()">AC</button>
+              <div class="row" style="margin-top: 10px;">
+                <button type="button" onclick="appendExpr('(')">(</button>
+                <button type="button" onclick="appendExpr(')')">)</button>
+                <button type="button" onclick="appendExpr('%')">%</button>
+                <button type="button" onclick="appendExpr('pi')">π</button>
+                <button type="button" onclick="appendExpr('e')">e</button>
+                <button type="button" onclick="backspaceExpr()">⌫</button>
+                <button type="button" onclick="clearExpr()">AC</button>
+              </div>
+
+              <div class="grid" style="margin-top: 10px; grid-template-columns: repeat(5, 1fr);">
+                <button type="button" onclick="appendExpr('7')">7</button>
+                <button type="button" onclick="appendExpr('8')">8</button>
+                <button type="button" onclick="appendExpr('9')">9</button>
+                <button type="button" onclick="appendExpr('/')">÷</button>
+                <button type="button" onclick="appendExpr('sqrt(')">√x</button>
+
+                <button type="button" onclick="appendExpr('4')">4</button>
+                <button type="button" onclick="appendExpr('5')">5</button>
+                <button type="button" onclick="appendExpr('6')">6</button>
+                <button type="button" onclick="appendExpr('*')">×</button>
+                <button type="button" onclick="appendExpr('^')">xʸ</button>
+
+                <button type="button" onclick="appendExpr('1')">1</button>
+                <button type="button" onclick="appendExpr('2')">2</button>
+                <button type="button" onclick="appendExpr('3')">3</button>
+                <button type="button" onclick="appendExpr('-')">−</button>
+                <button type="button" onclick="appendExpr('^2')">x²</button>
+
+                <button type="button" onclick="appendExpr('0')">0</button>
+                <button type="button" onclick="appendExpr('.')">.</button>
+                <button type="button" onclick="computeExpr()" style="font-weight:700;">=</button>
+                <button type="button" onclick="appendExpr('+')">+</button>
+                <button type="button" onclick="appendExpr('1/(')">1/x</button>
+              </div>
+
+              <div class="row" style="margin-top: 10px;">
+                <button type="button" onclick="appendExpr('abs(')">abs</button>
+                <button type="button" onclick="appendExpr('ln(')">ln</button>
+                <button type="button" onclick="appendExpr('log(')">log10</button>
+              </div>
+
+              <div style="margin-top: 12px;">
+                <div class="small">Result</div>
+                <div class="result" id="exprResult">-</div>
+              </div>
+
+              <div class="warn" style="margin-top:10px;">
+                Supported functions: <span class="mono">sqrt(x), abs(x), ln(x), log(x)</span><br>
+                Use <span class="mono">^</span> for powers, for example <span class="mono">12^2</span> or <span class="mono">25^(1/2)</span>.
+              </div>
+            </div>
           </div>
+        </details>
 
-          <div class="grid" style="margin-top: 10px; grid-template-columns: repeat(5, 1fr);">
-            <button type="button" onclick="appendExpr('7')">7</button>
-            <button type="button" onclick="appendExpr('8')">8</button>
-            <button type="button" onclick="appendExpr('9')">9</button>
-            <button type="button" onclick="appendExpr('/')">÷</button>
-            <button type="button" onclick="appendExpr('sqrt(')">√x</button>
+        <details class="calc">
+          <summary>Statistical Tools</summary>
+          <div class="content">
 
-            <button type="button" onclick="appendExpr('4')">4</button>
-            <button type="button" onclick="appendExpr('5')">5</button>
-            <button type="button" onclick="appendExpr('6')">6</button>
-            <button type="button" onclick="appendExpr('*')">×</button>
-            <button type="button" onclick="appendExpr('^')">xʸ</button>
+            <div class="card">
+              <h3 class="section-title">Z-Score from Service Level</h3>
+              <p class="small">Input a cumulative probability / service level as a decimal, such as 0.90, 0.95, or 0.99.</p>
 
-            <button type="button" onclick="appendExpr('1')">1</button>
-            <button type="button" onclick="appendExpr('2')">2</button>
-            <button type="button" onclick="appendExpr('3')">3</button>
-            <button type="button" onclick="appendExpr('-')">−</button>
-            <button type="button" onclick="appendExpr('^2')">x²</button>
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="slInput">Service level / probability</label>
+                  <input id="slInput" type="number" step="any" placeholder="e.g., 0.95">
+                </div>
+                <div>
+                  <label for="roundStats1">Rounding</label>
+                  <select id="roundStats1">
+                    <option value="4" selected>Round to 4 decimals</option>
+                    <option value="2">Round to 2 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
 
-            <button type="button" onclick="appendExpr('0')">0</button>
-            <button type="button" onclick="appendExpr('.')">.</button>
-            <button type="button" onclick="computeExpr()" style="font-weight:700;">=</button>
-            <button type="button" onclick="appendExpr('+')">+</button>
-            <button type="button" onclick="appendExpr('1/(')">1/x</button>
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runZFromSL()">Compute z-score</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="zFromSLResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Service Level from Z-Score</h3>
+              <p class="small">Input a z-score to find the cumulative probability / service level.</p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="zInput">z-score</label>
+                  <input id="zInput" type="number" step="any" placeholder="e.g., 1.645">
+                </div>
+                <div>
+                  <label for="roundStats2">Rounding</label>
+                  <select id="roundStats2">
+                    <option value="4" selected>Round to 4 decimals</option>
+                    <option value="2">Round to 2 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runSLFromZ()">Compute service level</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="slFromZResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Standardization Tool</h3>
+              <p class="small">Formula: <span class="mono">z = (x − mean) / standard deviation</span></p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="stdX">x</label>
+                  <input id="stdX" type="number" step="any" placeholder="e.g., 120">
+                </div>
+                <div>
+                  <label for="stdMean">Mean</label>
+                  <input id="stdMean" type="number" step="any" placeholder="e.g., 100">
+                </div>
+                <div>
+                  <label for="stdSD">Standard deviation</label>
+                  <input id="stdSD" type="number" step="any" placeholder="e.g., 15">
+                </div>
+                <div>
+                  <label for="roundStats3">Rounding</label>
+                  <select id="roundStats3">
+                    <option value="4" selected>Round to 4 decimals</option>
+                    <option value="2">Round to 2 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runStandardize()">Compute z-score</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="standardizeResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Mean and Standard Deviation Helper</h3>
+              <p class="small">Enter numbers separated by commas. Example: <span class="mono">10, 12, 15, 20, 23</span></p>
+
+              <label for="dataList">Data</label>
+              <textarea id="dataList" placeholder="e.g., 10, 12, 15, 20, 23"></textarea>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runDataStats()">Compute statistics</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Results</div>
+                <div class="result" id="dataStatsResult">-</div>
+              </div>
+            </div>
           </div>
+        </details>
 
-          <div class="row" style="margin-top: 10px;">
-            <button type="button" onclick="appendExpr('abs(')">abs</button>
-            <button type="button" onclick="appendExpr('ln(')">ln</button>
-            <button type="button" onclick="appendExpr('log(')">log10</button>
-          </div>
+        <details class="calc">
+          <summary>8. Intro to Inventory Management</summary>
+          <div class="content">
+            <div class="warn">
+              This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above to compute answers.
+            </div>
 
-          <div style="margin-top: 12px;">
-            <div class="small">Result</div>
-            <div class="result" id="exprResult">-</div>
+            <div class="card">
+              <h3 class="section-title">Chapter 8 Formulas</h3>
+              <p class="small">
+                <span class="mono">Inventory Turns = Flow Rate / Inventory</span><br>
+                <span class="mono">Days of Supply = Inventory / Flow Rate</span><br>
+                <span class="mono">Annual Holding Cost = Unit Cost × Holding Cost Rate</span>
+              </p>
+            </div>
           </div>
+        </details>
 
-          <div class="warn" style="margin-top:10px;">
-            Supported functions: <span class="mono">sqrt(x), abs(x), ln(x), log(x)</span><br>
-            Use <span class="mono">^</span> for powers, for example <span class="mono">12^2</span> or <span class="mono">25^(1/2)</span>.
+        <details class="calc">
+          <summary>9. Supply Chain Management</summary>
+          <div class="content">
+            <div class="warn">
+              This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above for arithmetic, powers, and square roots, and use the <strong>Statistical Tools</strong> above for z-scores and service levels.
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Chapter 9 Formulas</h3>
+              <p class="small">
+                <span class="mono">Stockout Probability = Number of stockouts / Total items</span><br>
+                <span class="mono">In-Stock Probability = 1 − Stockout Probability</span><br>
+                <span class="mono">On-Order Inventory = Lead Time × Mean demand</span><br>
+                <span class="mono">On-Hand Inventory = √(L + 1) × Standard Deviation × z</span><br>
+                <span class="mono">Holding Cost per Unit = h × (On-Order Inventory + On-Hand Inventory) / Mean demand</span>
+              </p>
+            </div>
           </div>
+        </details>
+
+        <div class="footer">
+          <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
+          <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
         </div>
       </div>
-    </details>
 
-    <details class="calc">
-      <summary>Statistical Tools</summary>
-      <div class="content">
-
-        <div class="card">
-          <h3 class="section-title">Z-Score from Service Level</h3>
-          <p class="small">Input a cumulative probability / service level as a decimal, such as 0.90, 0.95, or 0.99.</p>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label for="slInput">Service level / probability</label>
-              <input id="slInput" type="number" step="any" placeholder="e.g., 0.95">
-            </div>
-            <div>
-              <label for="roundStats1">Rounding</label>
-              <select id="roundStats1">
-                <option value="4" selected>Round to 4 decimals</option>
-                <option value="2">Round to 2 decimals</option>
-                <option value="6">Round to 6 decimals</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runZFromSL()">Compute z-score</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Result</div>
-            <div class="result" id="zFromSLResult">-</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">Service Level from Z-Score</h3>
-          <p class="small">Input a z-score to find the cumulative probability / service level.</p>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label for="zInput">z-score</label>
-              <input id="zInput" type="number" step="any" placeholder="e.g., 1.645">
-            </div>
-            <div>
-              <label for="roundStats2">Rounding</label>
-              <select id="roundStats2">
-                <option value="4" selected>Round to 4 decimals</option>
-                <option value="2">Round to 2 decimals</option>
-                <option value="6">Round to 6 decimals</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runSLFromZ()">Compute service level</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Result</div>
-            <div class="result" id="slFromZResult">-</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">Standardization Tool</h3>
-          <p class="small">Formula: <span class="mono">z = (x − mean) / standard deviation</span></p>
-
-          <div class="grid" style="margin-top: 12px;">
-            <div>
-              <label for="stdX">x</label>
-              <input id="stdX" type="number" step="any" placeholder="e.g., 120">
-            </div>
-            <div>
-              <label for="stdMean">Mean</label>
-              <input id="stdMean" type="number" step="any" placeholder="e.g., 100">
-            </div>
-            <div>
-              <label for="stdSD">Standard deviation</label>
-              <input id="stdSD" type="number" step="any" placeholder="e.g., 15">
-            </div>
-            <div>
-              <label for="roundStats3">Rounding</label>
-              <select id="roundStats3">
-                <option value="4" selected>Round to 4 decimals</option>
-                <option value="2">Round to 2 decimals</option>
-                <option value="6">Round to 6 decimals</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runStandardize()">Compute z-score</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Result</div>
-            <div class="result" id="standardizeResult">-</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">Mean and Standard Deviation Helper</h3>
-          <p class="small">Enter numbers separated by commas. Example: <span class="mono">10, 12, 15, 20, 23</span></p>
-
-          <label for="dataList">Data</label>
-          <textarea id="dataList" placeholder="e.g., 10, 12, 15, 20, 23"></textarea>
-
-          <div class="row" style="margin-top: 12px;">
-            <button type="button" onclick="runDataStats()">Compute statistics</button>
-          </div>
-
-          <div style="margin-top: 10px;">
-            <div class="small">Results</div>
-            <div class="result" id="dataStatsResult">-</div>
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <details class="calc">
-      <summary>8. Intro to Inventory Management</summary>
-      <div class="content">
-        <div class="warn">
-          This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above to compute answers.
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">Chapter 8 Formulas</h3>
-          <p class="small">
-            <span class="mono">Inventory Turns = Flow Rate / Inventory</span><br>
-            <span class="mono">Days of Supply = Inventory / Flow Rate</span><br>
-            <span class="mono">Annual Holding Cost = Unit Cost × Holding Cost Rate</span>
+      <aside class="scrap-area">
+        <div class="scrap-card">
+          <h2 class="scrap-title">Scrap Paper</h2>
+          <p class="scrap-subtitle">
+            Use this space to track intermediate values and steps. It saves automatically in your browser until you clear it.
           </p>
-        </div>
-      </div>
-    </details>
 
-    <details class="calc">
-      <summary>9. Supply Chain Management</summary>
-      <div class="content">
-        <div class="warn">
-          This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above for arithmetic, powers, and square roots, and use the <strong>Statistical Tools</strong> above for z-scores and service levels.
-        </div>
+          <label for="scrapPad">Workspace</label>
+          <textarea id="scrapPad" placeholder="Example:
+Io (Ocean) = 8 × 1200 = 9600
+Ih (Ocean) = sqrt(9) × 500 × 2.33 = 3495
+Total inventory = 13095
+Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
 
-        <div class="card">
-          <h3 class="section-title">Chapter 9 Formulas</h3>
-          <p class="small">
-            <span class="mono">Stockout Probability = Number of stockouts / Total items</span><br>
-            <span class="mono">In-Stock Probability = 1 − Stockout Probability</span><br>
-            <span class="mono">On-Order Inventory = Lead Time × Mean demand</span><br>
-            <span class="mono">On-Hand Inventory = √(L + 1) × Standard Deviation × z</span><br>
-            <span class="mono">Holding Cost per Unit = h × (On-Order Inventory + On-Hand Inventory) / Mean demand</span>
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="scrap-actions">
+            <button type="button" onclick="insertLine()">New line</button>
+            <button type="button" onclick="insertBullet()">• Bullet</button>
+            <button type="button" onclick="insertTimestamp()">Time stamp</button>
+            <button type="button" onclick="clearScrap()">Clear scrap</button>
+          </div>
 
-    <div class="footer">
-      <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
-      <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
+          <div class="quick-buttons">
+            <button type="button" onclick="insertText('Io = L × mean = ')">Insert: Io</button>
+            <button type="button" onclick="insertText('Ih = sqrt(L + 1) × sd × z = ')">Insert: Ih</button>
+            <button type="button" onclick="insertText('Total inventory = Io + Ih = ')">Insert: Total inventory</button>
+            <button type="button" onclick="insertText('Holding cost per unit = h × (Io + Ih) / mean = ')">Insert: Holding cost</button>
+            <button type="button" onclick="insertText('Stockout probability = stockouts / total items = ')">Insert: Stockout probability</button>
+            <button type="button" onclick="insertText('In-stock probability = 1 − stockout probability = ')">Insert: In-stock probability</button>
+            <button type="button" onclick="insertText('Mean = ')">Insert: Mean</button>
+            <button type="button" onclick="insertText('z = ')">Insert: z</button>
+          </div>
+
+          <div class="subtle-box">
+            Tip: keep final values on separate lines, for example:<br>
+            <span class="mono">Io = 9600</span><br>
+            <span class="mono">Ih = 3495</span><br>
+            <span class="mono">Total = 13095</span><br>
+            <span class="mono">Holding cost = 19.64</span>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -413,6 +599,7 @@
   function resetAll() {
     clearExpr();
     resetStats();
+    clearScrap();
   }
 
   function appendExpr(s) {
@@ -687,13 +874,87 @@
     setText("dataStatsResult", "-");
   }
 
-  document.querySelectorAll("details.calc").forEach(d => {
-    d.addEventListener("toggle", () => {
-      if (d.open) {
-        document.querySelectorAll("details.calc").forEach(other => {
-          if (other !== d) other.open = false;
-        });
-      }
+  function getScrapPad() {
+    return document.getElementById("scrapPad");
+  }
+
+  function saveScrap() {
+    const pad = getScrapPad();
+    if (!pad) return;
+    localStorage.setItem("otmCalculatorScrapPad", pad.value);
+  }
+
+  function loadScrap() {
+    const pad = getScrapPad();
+    if (!pad) return;
+    const saved = localStorage.getItem("otmCalculatorScrapPad");
+    if (saved !== null) pad.value = saved;
+  }
+
+  function clearScrap() {
+    const pad = getScrapPad();
+    if (!pad) return;
+    pad.value = "";
+    localStorage.removeItem("otmCalculatorScrapPad");
+    pad.focus();
+  }
+
+  function insertAtCursor(text) {
+    const pad = getScrapPad();
+    if (!pad) return;
+
+    const start = pad.selectionStart ?? pad.value.length;
+    const end = pad.selectionEnd ?? pad.value.length;
+    const before = pad.value.slice(0, start);
+    const after = pad.value.slice(end);
+
+    pad.value = before + text + after;
+    const newPos = start + text.length;
+    pad.selectionStart = newPos;
+    pad.selectionEnd = newPos;
+    pad.focus();
+    saveScrap();
+  }
+
+  function insertText(text) {
+    insertAtCursor(text);
+  }
+
+  function insertLine() {
+    insertAtCursor("\n");
+  }
+
+  function insertBullet() {
+    const pad = getScrapPad();
+    if (!pad) return;
+
+    const atStart = pad.selectionStart === 0;
+    const needsNewLine = !atStart && pad.value.length > 0 && pad.value[pad.selectionStart - 1] !== "\n";
+    insertAtCursor((needsNewLine ? "\n" : "") + "• ");
+  }
+
+  function insertTimestamp() {
+    const now = new Date();
+    const stamp = `[${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}] `;
+    insertAtCursor((getScrapPad().value ? "\n" : "") + stamp);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadScrap();
+
+    const pad = getScrapPad();
+    if (pad) {
+      pad.addEventListener("input", saveScrap);
+    }
+
+    document.querySelectorAll("details.calc").forEach(d => {
+      d.addEventListener("toggle", () => {
+        if (d.open) {
+          document.querySelectorAll("details.calc").forEach(other => {
+            if (other !== d) other.open = false;
+          });
+        }
+      });
     });
   });
 </script>
