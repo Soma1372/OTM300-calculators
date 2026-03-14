@@ -6,7 +6,7 @@
   <title>OTM Calculator 2.0</title>
 
   <meta name="copyright" content="© 2026 Amir. All rights reserved.">
-  <meta name="description" content="OTM Calculator 2.0: Enhanced general calculator, statistical tools, Chapter 8 and Chapter 9 formula lists, Chapter 10 forecasting tools, and a built-in scrap paper panel.">
+  <meta name="description" content="OTM Calculator 2.0: Enhanced general calculator, statistical tools, Chapter 8 and Chapter 9 formula lists, Chapter 10 forecasting tools, Chapter 11 inventory management model tools, and a built-in scrap paper panel.">
 
   <style>
     * { box-sizing: border-box; }
@@ -307,6 +307,16 @@
       font-size: 17px;
       font-weight: 700;
       padding: 10px 8px;
+    }
+
+    .mini-note {
+      margin-top: 6px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px solid #ececec;
+      font-size: 12px;
+      color: #555;
     }
 
     @media (max-width: 900px) {
@@ -736,6 +746,199 @@
           </div>
         </details>
 
+        <details class="calc">
+          <summary>11. Inventory Management Models</summary>
+          <div class="content">
+            <div class="warn">
+              This section adds panel-based calculators for Chapter 11 only. Use these tools for EOQ, Newsvendor, and the Order-Up-To model. All results below round to <strong>2 decimals</strong>.
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">EOQ / Optimal Order Quantity</h3>
+              <p class="small">Use when demand is steady and orders can be placed repeatedly.</p>
+              <p class="small"><span class="mono">Q* = sqrt((2 × K × R) / h)</span></p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="eoqK">Ordering Cost (K)</label>
+                  <input id="eoqK" type="number" step="any" placeholder="e.g., 50">
+                </div>
+                <div>
+                  <label for="eoqR">Annual Demand (R)</label>
+                  <input id="eoqR" type="number" step="any" placeholder="e.g., 1000">
+                </div>
+                <div>
+                  <label for="eoqH">Holding Cost (h)</label>
+                  <input id="eoqH" type="number" step="any" placeholder="e.g., 3">
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runEOQ()">Compute EOQ</button>
+              </div>
+
+              <div class="mini-note">
+                Outputs: Q*, Average Inventory, Annual Ordering Cost, Annual Holding Cost, and Total Relevant Cost.
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="eoqResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Total Annual Cost at Any Q</h3>
+              <p class="small">Use to compare feasible quantities when there are constraints or quantity choices.</p>
+              <p class="small"><span class="mono">C(Q) = (K × R / Q) + (h × Q / 2)</span></p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="costQ">Order Quantity (Q)</label>
+                  <input id="costQ" type="number" step="any" placeholder="e.g., 150">
+                </div>
+                <div>
+                  <label for="costK">Ordering Cost (K)</label>
+                  <input id="costK" type="number" step="any" placeholder="e.g., 50">
+                </div>
+                <div>
+                  <label for="costR">Annual Demand (R)</label>
+                  <input id="costR" type="number" step="any" placeholder="e.g., 1000">
+                </div>
+                <div>
+                  <label for="costH">Holding Cost (h)</label>
+                  <input id="costH" type="number" step="any" placeholder="e.g., 3">
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runEOQCost()">Compute Total Cost</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="eoqCostResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Newsvendor Costs</h3>
+              <p class="small">Use when there is a single order opportunity and unsold items lose value.</p>
+              <p class="small">
+                <span class="mono">Cu = Price − Cost</span><br>
+                <span class="mono">Co = Cost − Salvage</span><br>
+                <span class="mono">CR = Cu / (Cu + Co)</span>
+              </p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="newsPrice">Selling Price</label>
+                  <input id="newsPrice" type="number" step="any" placeholder="e.g., 190">
+                </div>
+                <div>
+                  <label for="newsCost">Purchase Cost</label>
+                  <input id="newsCost" type="number" step="any" placeholder="e.g., 100">
+                </div>
+                <div>
+                  <label for="newsSalvage">Salvage Value</label>
+                  <input id="newsSalvage" type="number" step="any" placeholder="e.g., 70">
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runNewsvendorCosts()">Compute Cu, Co, and CR</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="newsvendorCostsResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Newsvendor Optimal Order Quantity</h3>
+              <p class="small">This panel finds <span class="mono">z</span> from the Critical Ratio, then computes <span class="mono">Q* = μ + zσ</span>.</p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="newsMean">Mean Demand (μ)</label>
+                  <input id="newsMean" type="number" step="any" placeholder="e.g., 3000">
+                </div>
+                <div>
+                  <label for="newsSD">Standard Deviation (σ)</label>
+                  <input id="newsSD" type="number" step="any" placeholder="e.g., 1000">
+                </div>
+                <div>
+                  <label for="newsCR">Critical Ratio (CR)</label>
+                  <input id="newsCR" type="number" step="any" placeholder="e.g., 0.75">
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runNewsvendorQ()">Compute z and Q*</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="newsvendorQResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Order-Up-To Model</h3>
+              <p class="small">Use when inventory is reviewed periodically and you order enough to top up to a target level <span class="mono">S</span>.</p>
+              <p class="small">
+                <span class="mono">z = NORM.S.INV(Service Level)</span><br>
+                <span class="mono">Pipeline = Mean × L</span><br>
+                <span class="mono">Safety Stock = z × σ × sqrt(L + 1)</span><br>
+                <span class="mono">S = Pipeline + Safety Stock</span><br>
+                <span class="mono">Inventory Position = On Hand + On Order − Backorders</span><br>
+                <span class="mono">Order Quantity = S − Inventory Position</span>
+              </p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="outuMean">Mean Demand per Period</label>
+                  <input id="outuMean" type="number" step="any" placeholder="e.g., 1200">
+                </div>
+                <div>
+                  <label for="outuSD">Standard Deviation (σ)</label>
+                  <input id="outuSD" type="number" step="any" placeholder="e.g., 500">
+                </div>
+                <div>
+                  <label for="outuLead">Lead Time (L)</label>
+                  <input id="outuLead" type="number" step="any" placeholder="e.g., 8">
+                </div>
+                <div>
+                  <label for="outuSL">Service Level</label>
+                  <input id="outuSL" type="number" step="any" placeholder="e.g., 0.99">
+                </div>
+                <div>
+                  <label for="outuOnHand">On-Hand Inventory</label>
+                  <input id="outuOnHand" type="number" step="any" placeholder="e.g., 3000">
+                </div>
+                <div>
+                  <label for="outuOnOrder">On-Order Inventory</label>
+                  <input id="outuOnOrder" type="number" step="any" placeholder="e.g., 9000">
+                </div>
+                <div>
+                  <label for="outuBack">Backorders</label>
+                  <input id="outuBack" type="number" step="any" placeholder="e.g., 0">
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runOrderUpTo()">Compute Order-Up-To Model</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="orderUpToResult">-</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
         <div class="footer">
           <div>© 2026 Amir Fard Bahreini. All rights reserved.</div>
           <div>These course materials may not be reproduced, distributed, recorded, or shared without permission.</div>
@@ -758,7 +961,23 @@ Holding cost = 1.80 × 13095 / 1200 = 19.64
 
 Forecast error = 100 - 110 = -10
 Absolute error = abs(-10) = 10
-ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
+ES = (0.8 × 550) + (0.2 × 500) = 540
+
+Q* = sqrt((2 × K × R) / h) =
+Average Inventory =
+Ordering Cost =
+Holding Cost =
+Total Cost =
+
+Cu =
+Co =
+CR =
+z =
+Pipeline =
+Safety Stock =
+S =
+Inventory Position =
+Order Quantity ="></textarea>
 
           <div class="scrap-actions">
             <button type="button" onclick="insertLine()">New line</button>
@@ -780,14 +999,27 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
             <button type="button" onclick="insertText('Absolute error = abs(FE) = ')">Insert: Absolute Error</button>
             <button type="button" onclick="insertText('ŷt+1 = (alpha × yt) + ((1 - alpha) × ŷt) = ')">Insert: ES</button>
             <button type="button" onclick="insertText('Seasonal forecast = base × SI = ')">Insert: Seasonal Forecast</button>
+            <button type="button" onclick="insertText('Q* = sqrt((2 × K × R) / h) = ')">Insert: EOQ Q*</button>
+            <button type="button" onclick="insertText('Average Inventory = Q* / 2 = ')">Insert: Average Inventory</button>
+            <button type="button" onclick="insertText('Ordering Cost = (K × R) / Q = ')">Insert: Ordering Cost</button>
+            <button type="button" onclick="insertText('Holding Cost = (h × Q) / 2 = ')">Insert: Holding Cost</button>
+            <button type="button" onclick="insertText('Total Cost = Ordering Cost + Holding Cost = ')">Insert: Total Cost</button>
+            <button type="button" onclick="insertText('Cu = Price - Cost = ')">Insert: Cu</button>
+            <button type="button" onclick="insertText('Co = Cost - Salvage = ')">Insert: Co</button>
+            <button type="button" onclick="insertText('CR = Cu / (Cu + Co) = ')">Insert: CR</button>
+            <button type="button" onclick="insertText('Pipeline = Mean × L = ')">Insert: Pipeline</button>
+            <button type="button" onclick="insertText('Safety Stock = z × sd × sqrt(L + 1) = ')">Insert: Safety Stock</button>
+            <button type="button" onclick="insertText('S = Pipeline + Safety Stock = ')">Insert: S</button>
+            <button type="button" onclick="insertText('Inventory Position = On Hand + On Order - Backorders = ')">Insert: Inventory Position</button>
+            <button type="button" onclick="insertText('Order Quantity = S - Inventory Position = ')">Insert: Order Quantity</button>
           </div>
 
           <div class="subtle-box">
             Tip: keep final values on separate lines, for example:<br>
-            <span class="mono">Io = 9600</span><br>
-            <span class="mono">Ih = 3495</span><br>
-            <span class="mono">Total = 13095</span><br>
-            <span class="mono">Holding cost = 19.64</span>
+            <span class="mono">Q* = 182.57</span><br>
+            <span class="mono">CR = 0.75</span><br>
+            <span class="mono">S = 13095.00</span><br>
+            <span class="mono">Order Quantity = 1095.00</span>
           </div>
         </div>
       </aside>
@@ -811,6 +1043,7 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
     clearExpr();
     resetStats();
     resetForecasting();
+    resetChapter11();
     clearScrap();
   }
 
@@ -881,7 +1114,9 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
   });
 
   function parseNum(id) {
-    const v = document.getElementById(id).value;
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const v = el.value;
     if (v === "" || v === null) return null;
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
@@ -891,6 +1126,10 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
     if (!Number.isFinite(value)) return String(value);
     const d = Math.max(0, Math.min(10, Number(decimals) || 4));
     return value.toFixed(d);
+  }
+
+  function format2(value) {
+    return formatWith(2, value);
   }
 
   function erf(x) {
@@ -1138,6 +1377,160 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
     setText("seasonResult", `Seasonal forecast = ${formatWith(d, forecast)}`);
   }
 
+  function runEOQ() {
+    const K = parseNum("eoqK");
+    const R = parseNum("eoqR");
+    const h = parseNum("eoqH");
+
+    if (K === null || R === null || h === null) {
+      setText("eoqResult", "Enter K, R, and h.");
+      return;
+    }
+    if (!(K >= 0 && R >= 0 && h > 0)) {
+      setText("eoqResult", "K and R must be ≥ 0, and h must be > 0.");
+      return;
+    }
+
+    const Qstar = Math.sqrt((2 * K * R) / h);
+    const avgInv = Qstar / 2;
+    const orderingCost = Qstar === 0 ? 0 : (K * R) / Qstar;
+    const holdingCost = (h * Qstar) / 2;
+    const totalCost = orderingCost + holdingCost;
+
+    setText(
+      "eoqResult",
+      `Q* = ${format2(Qstar)}
+Average Inventory = ${format2(avgInv)}
+Annual Ordering Cost = ${format2(orderingCost)}
+Annual Holding Cost = ${format2(holdingCost)}
+Total Relevant Cost = ${format2(totalCost)}`
+    );
+  }
+
+  function runEOQCost() {
+    const Q = parseNum("costQ");
+    const K = parseNum("costK");
+    const R = parseNum("costR");
+    const h = parseNum("costH");
+
+    if (Q === null || K === null || R === null || h === null) {
+      setText("eoqCostResult", "Enter Q, K, R, and h.");
+      return;
+    }
+    if (!(Q > 0 && K >= 0 && R >= 0 && h >= 0)) {
+      setText("eoqCostResult", "Q must be > 0, and K, R, h must be ≥ 0.");
+      return;
+    }
+
+    const orderingCost = (K * R) / Q;
+    const holdingCost = (h * Q) / 2;
+    const totalCost = orderingCost + holdingCost;
+
+    setText(
+      "eoqCostResult",
+      `Ordering Cost = ${format2(orderingCost)}
+Holding Cost = ${format2(holdingCost)}
+Total Annual Cost = ${format2(totalCost)}`
+    );
+  }
+
+  function runNewsvendorCosts() {
+    const price = parseNum("newsPrice");
+    const cost = parseNum("newsCost");
+    const salvage = parseNum("newsSalvage");
+
+    if (price === null || cost === null || salvage === null) {
+      setText("newsvendorCostsResult", "Enter selling price, purchase cost, and salvage value.");
+      return;
+    }
+
+    const Cu = price - cost;
+    const Co = cost - salvage;
+    const denom = Cu + Co;
+
+    if (!(denom > 0)) {
+      setText("newsvendorCostsResult", "Cu + Co must be > 0.");
+      return;
+    }
+
+    const CR = Cu / denom;
+
+    setText(
+      "newsvendorCostsResult",
+      `Cu = ${format2(Cu)}
+Co = ${format2(Co)}
+Critical Ratio = ${format2(CR)}`
+    );
+  }
+
+  function runNewsvendorQ() {
+    const mu = parseNum("newsMean");
+    const sigma = parseNum("newsSD");
+    const CR = parseNum("newsCR");
+
+    if (mu === null || sigma === null || CR === null) {
+      setText("newsvendorQResult", "Enter mean demand, standard deviation, and critical ratio.");
+      return;
+    }
+    if (!(sigma >= 0)) {
+      setText("newsvendorQResult", "Standard deviation must be ≥ 0.");
+      return;
+    }
+    if (!(CR > 0 && CR < 1)) {
+      setText("newsvendorQResult", "Critical ratio must be between 0 and 1.");
+      return;
+    }
+
+    const z = inverseNormalCDF(CR);
+    const Qstar = mu + (z * sigma);
+
+    setText(
+      "newsvendorQResult",
+      `z = ${format2(z)}
+Q* = ${format2(Qstar)}`
+    );
+  }
+
+  function runOrderUpTo() {
+    const meanPer = parseNum("outuMean");
+    const sigma = parseNum("outuSD");
+    const L = parseNum("outuLead");
+    const serviceLevel = parseNum("outuSL");
+    const onHand = parseNum("outuOnHand");
+    const onOrder = parseNum("outuOnOrder");
+    const backorders = parseNum("outuBack");
+
+    if (meanPer === null || sigma === null || L === null || serviceLevel === null || onHand === null || onOrder === null || backorders === null) {
+      setText("orderUpToResult", "Enter mean demand, standard deviation, lead time, service level, on-hand inventory, on-order inventory, and backorders.");
+      return;
+    }
+    if (!(sigma >= 0 && L >= 0)) {
+      setText("orderUpToResult", "Standard deviation and lead time must be ≥ 0.");
+      return;
+    }
+    if (!(serviceLevel > 0 && serviceLevel < 1)) {
+      setText("orderUpToResult", "Service level must be between 0 and 1.");
+      return;
+    }
+
+    const z = inverseNormalCDF(serviceLevel);
+    const pipeline = meanPer * L;
+    const safetyStock = z * sigma * Math.sqrt(L + 1);
+    const S = pipeline + safetyStock;
+    const inventoryPosition = onHand + onOrder - backorders;
+    const orderQty = S - inventoryPosition;
+
+    setText(
+      "orderUpToResult",
+      `z = ${format2(z)}
+Pipeline Inventory = ${format2(pipeline)}
+Safety Stock = ${format2(safetyStock)}
+Order-Up-To Level (S) = ${format2(S)}
+Inventory Position = ${format2(inventoryPosition)}
+Order Quantity = ${format2(orderQty)}`
+    );
+  }
+
   function resetStats() {
     document.getElementById("slInput").value = "";
     document.getElementById("roundStats1").value = "4";
@@ -1179,6 +1572,27 @@ ES = (0.8 × 550) + (0.2 × 500) = 540"></textarea>
     setText("desResult", "-");
     setText("siResult", "-");
     setText("seasonResult", "-");
+  }
+
+  function resetChapter11() {
+    const ids = [
+      "eoqK", "eoqR", "eoqH",
+      "costQ", "costK", "costR", "costH",
+      "newsPrice", "newsCost", "newsSalvage",
+      "newsMean", "newsSD", "newsCR",
+      "outuMean", "outuSD", "outuLead", "outuSL", "outuOnHand", "outuOnOrder", "outuBack"
+    ];
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+
+    setText("eoqResult", "-");
+    setText("eoqCostResult", "-");
+    setText("newsvendorCostsResult", "-");
+    setText("newsvendorQResult", "-");
+    setText("orderUpToResult", "-");
   }
 
   function getScrapPad() {
