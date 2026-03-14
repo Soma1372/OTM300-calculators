@@ -6,7 +6,7 @@
   <title>OTM Calculator 2.0</title>
 
   <meta name="copyright" content="© 2026 Amir. All rights reserved.">
-  <meta name="description" content="OTM Calculator 2.0: Enhanced general calculator, statistical tools, Chapter 8 and Chapter 9 formula lists, and a built-in scrap paper panel.">
+  <meta name="description" content="OTM Calculator 2.0: Enhanced general calculator, statistical tools, forecasting formulas and forecasting input panels, and a built-in scrap paper panel.">
 
   <style>
     * { box-sizing: border-box; }
@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
     }
 
@@ -28,7 +28,7 @@
 
     .main-layout {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+      grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
       gap: 18px;
       align-items: start;
     }
@@ -75,12 +75,13 @@
     }
 
     button {
-      padding: 10px 14px;
+      padding: 12px 16px;
       border: 1px solid #aaa;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #f7f7f7;
       cursor: pointer;
       font-size: 16px;
+      min-height: 48px;
     }
 
     button:hover { background: #eee; }
@@ -99,6 +100,7 @@
       background: #fafafa;
       border: 1px dashed #bbb;
       border-radius: 8px;
+      white-space: pre-wrap;
     }
 
     .small { font-size: 13px; color: #555; }
@@ -204,13 +206,14 @@
 
     .navlink {
       display: inline-block;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border: 1px solid #aaa;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #f7f7f7;
       color: #000;
       text-decoration: none;
       font-size: 16px;
+      min-height: 48px;
     }
 
     .navlink:hover { background: #eee; }
@@ -235,7 +238,7 @@
     }
 
     #scrapPad {
-      min-height: 420px;
+      min-height: 460px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       line-height: 1.6;
       white-space: pre-wrap;
@@ -252,7 +255,8 @@
       width: 100%;
       text-align: left;
       font-size: 14px;
-      padding: 9px 10px;
+      padding: 11px 12px;
+      min-height: 52px;
     }
 
     .scrap-actions {
@@ -278,6 +282,48 @@
       line-height: 1.45;
     }
 
+    .formula-list .mono {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .big-pad-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .big-pad-grid button,
+    .func-row button {
+      font-size: 18px;
+      font-weight: 700;
+      min-height: 58px;
+      padding: 14px 10px;
+    }
+
+    .func-row {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .inline-formula {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #f7f7f7;
+      border: 1px solid #e5e5e5;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 1050px) {
+      .func-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 900px) {
       .main-layout {
         grid-template-columns: 1fr;
@@ -295,6 +341,8 @@
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .quick-buttons { grid-template-columns: 1fr; }
+      .big-pad-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .func-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
   </style>
 </head>
@@ -313,16 +361,17 @@
 
     <div class="main-layout">
       <div class="calculator-area">
+
         <details class="calc" open>
           <summary>Enhanced General Calculator</summary>
           <div class="content">
-            <p class="small">Supports arithmetic, parentheses, decimals, %, powers, roots, logs, abs, reciprocal, π, and e.</p>
+            <p class="small">Use this for the formula-only items below. Supports arithmetic, parentheses, decimals, %, powers, roots, logs, abs, reciprocal, π, and e.</p>
 
-            <div style="max-width: 620px;">
+            <div style="max-width: 760px;">
               <label for="expr">Expression</label>
-              <input id="expr" type="text" inputmode="decimal" placeholder="e.g., sqrt(225) + ln(2) + 0.95*100" />
+              <input id="expr" type="text" inputmode="decimal" placeholder="e.g., (100-110), abs(100-110), ((-10)^2), (10+14+21)/3, 100*0.90" />
 
-              <div class="row" style="margin-top: 10px;">
+              <div class="func-row">
                 <button type="button" onclick="appendExpr('(')">(</button>
                 <button type="button" onclick="appendExpr(')')">)</button>
                 <button type="button" onclick="appendExpr('%')">%</button>
@@ -332,7 +381,7 @@
                 <button type="button" onclick="clearExpr()">AC</button>
               </div>
 
-              <div class="grid" style="margin-top: 10px; grid-template-columns: repeat(5, 1fr);">
+              <div class="big-pad-grid">
                 <button type="button" onclick="appendExpr('7')">7</button>
                 <button type="button" onclick="appendExpr('8')">8</button>
                 <button type="button" onclick="appendExpr('9')">9</button>
@@ -358,10 +407,14 @@
                 <button type="button" onclick="appendExpr('1/(')">1/x</button>
               </div>
 
-              <div class="row" style="margin-top: 10px;">
+              <div class="func-row">
                 <button type="button" onclick="appendExpr('abs(')">abs</button>
                 <button type="button" onclick="appendExpr('ln(')">ln</button>
                 <button type="button" onclick="appendExpr('log(')">log10</button>
+                <button type="button" onclick="appendExpr('100-110')">FE sample</button>
+                <button type="button" onclick="appendExpr('abs(100-110)')">ABS sample</button>
+                <button type="button" onclick="appendExpr('(10+14+21)/3')">AVG sample</button>
+                <button type="button" onclick="appendExpr('100*0.90')">Season sample</button>
               </div>
 
               <div style="margin-top: 12px;">
@@ -496,39 +549,181 @@
         </details>
 
         <details class="calc">
-          <summary>8. Intro to Inventory Management</summary>
+          <summary>10. Forecasting</summary>
           <div class="content">
             <div class="warn">
-              This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above to compute answers.
+              Use a <strong>hybrid setup</strong>: simple formulas are listed for the <strong>Enhanced General Calculator</strong>, while multi-step forecasting methods have dedicated <strong>input panels</strong> below.
+            </div>
+
+            <div class="card formula-list">
+              <h3 class="section-title">Formula-Only Items (Use the General Calculator)</h3>
+              <p class="small">These are intentionally left as formulas so students still identify the correct setup.</p>
+
+              <span class="mono">Forecast Error (FEt) = Forecast − Actual = ŷt − yt</span>
+              <span class="mono">Squared Error = (FEt)^2</span>
+              <span class="mono">Absolute Error = abs(FEt)</span>
+              <span class="mono">MSE = (sum of squared errors) / n</span>
+              <span class="mono">MAE = (sum of absolute errors) / n</span>
+              <span class="mono">Naïve Forecast = last realized value = yt</span>
+              <span class="mono">Moving Average Forecast = (sum of last T realized values) / T</span>
+              <span class="mono">Forecast Combination = (sum of forecasts) / n</span>
+
+              <div class="subtle-box">
+                Example expressions students can type above:
+                <div class="mono" style="margin-top:8px;">100-110</div>
+                <div class="mono">abs(100-110)</div>
+                <div class="mono">((-10)^2)</div>
+                <div class="mono">(64+49+81)/3</div>
+                <div class="mono">(10+14+21)/3</div>
+              </div>
             </div>
 
             <div class="card">
-              <h3 class="section-title">Chapter 8 Formulas</h3>
-              <p class="small">
-                <span class="mono">Inventory Turns = Flow Rate / Inventory</span><br>
-                <span class="mono">Days of Supply = Inventory / Flow Rate</span><br>
-                <span class="mono">Annual Holding Cost = Unit Cost × Holding Cost Rate</span>
-              </p>
-            </div>
-          </div>
-        </details>
+              <h3 class="section-title">Exponential Smoothing Panel</h3>
+              <p class="small">Formula: <span class="mono">ŷt+1 = (α × yt) + ((1 − α) × ŷt)</span></p>
 
-        <details class="calc">
-          <summary>9. Supply Chain Management</summary>
-          <div class="content">
-            <div class="warn">
-              This section lists the chapter formulas only. Use the <strong>Enhanced General Calculator</strong> above for arithmetic, powers, and square roots, and use the <strong>Statistical Tools</strong> above for z-scores and service levels.
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="esAlpha">α (alpha)</label>
+                  <input id="esAlpha" type="number" step="any" placeholder="e.g., 0.8">
+                </div>
+                <div>
+                  <label for="esActual">Actual demand (yt)</label>
+                  <input id="esActual" type="number" step="any" placeholder="e.g., 550">
+                </div>
+                <div>
+                  <label for="esOldForecast">Old forecast (ŷt)</label>
+                  <input id="esOldForecast" type="number" step="any" placeholder="e.g., 500">
+                </div>
+                <div>
+                  <label for="esRound">Rounding</label>
+                  <select id="esRound">
+                    <option value="4">Round to 4 decimals</option>
+                    <option value="2" selected>Round to 2 decimals</option>
+                    <option value="0">Round to 0 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runES()">Compute ES forecast</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="esResult">-</div>
+              </div>
             </div>
 
             <div class="card">
-              <h3 class="section-title">Chapter 9 Formulas</h3>
-              <p class="small">
-                <span class="mono">Stockout Probability = Number of stockouts / Total items</span><br>
-                <span class="mono">In-Stock Probability = 1 − Stockout Probability</span><br>
-                <span class="mono">On-Order Inventory = Lead Time × Mean demand</span><br>
-                <span class="mono">On-Hand Inventory = √(L + 1) × Standard Deviation × z</span><br>
-                <span class="mono">Holding Cost per Unit = h × (On-Order Inventory + On-Hand Inventory) / Mean demand</span>
-              </p>
+              <h3 class="section-title">Double Exponential Smoothing Panel</h3>
+              <p class="small">Uses the lecture setup shown on your slide.</p>
+              <div class="small inline-formula mono">New smoothed demand = (α × yt) + ((1 − α) × ŷt) + T̂t</div>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="desAlpha">α (alpha)</label>
+                  <input id="desAlpha" type="number" step="any" placeholder="e.g., 0.2">
+                </div>
+                <div>
+                  <label for="desActual">Actual demand (yt)</label>
+                  <input id="desActual" type="number" step="any" placeholder="e.g., 510">
+                </div>
+                <div>
+                  <label for="desOldForecast">Old smoothed demand (ŷt)</label>
+                  <input id="desOldForecast" type="number" step="any" placeholder="e.g., 500">
+                </div>
+                <div>
+                  <label for="desTrend">Smoothed trend (T̂t)</label>
+                  <input id="desTrend" type="number" step="any" placeholder="e.g., 5">
+                </div>
+                <div>
+                  <label for="desRound">Rounding</label>
+                  <select id="desRound">
+                    <option value="4">Round to 4 decimals</option>
+                    <option value="2" selected>Round to 2 decimals</option>
+                    <option value="0">Round to 0 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runDES()">Compute DES forecast</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="desResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Seasonal Forecast Panel</h3>
+              <p class="small">Formula: <span class="mono">Forecast = Smoothed Base × Seasonality Index (SI)</span></p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="seasonBase">Smoothed base forecast</label>
+                  <input id="seasonBase" type="number" step="any" placeholder="e.g., 100">
+                </div>
+                <div>
+                  <label for="seasonSI">Seasonality Index (SI)</label>
+                  <input id="seasonSI" type="number" step="any" placeholder="e.g., 0.90">
+                </div>
+                <div>
+                  <label for="seasonRound">Rounding</label>
+                  <select id="seasonRound">
+                    <option value="4">Round to 4 decimals</option>
+                    <option value="2" selected>Round to 2 decimals</option>
+                    <option value="0">Round to 0 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runSeasonal()">Compute seasonal forecast</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="seasonResult">-</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-title">Seasonality Index Panel</h3>
+              <p class="small">Formula: <span class="mono">SI = Average season demand / Average total demand</span></p>
+
+              <div class="grid" style="margin-top: 12px;">
+                <div>
+                  <label for="siSeasonDemand">Average season demand</label>
+                  <input id="siSeasonDemand" type="number" step="any" placeholder="e.g., 90">
+                </div>
+                <div>
+                  <label for="siTotalDemand">Average total demand</label>
+                  <input id="siTotalDemand" type="number" step="any" placeholder="e.g., 100">
+                </div>
+                <div>
+                  <label for="siRound">Rounding</label>
+                  <select id="siRound">
+                    <option value="4">Round to 4 decimals</option>
+                    <option value="2" selected>Round to 2 decimals</option>
+                    <option value="6">Round to 6 decimals</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row" style="margin-top: 12px;">
+                <button type="button" onclick="runSI()">Compute SI</button>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="small">Result</div>
+                <div class="result" id="siResult">-</div>
+              </div>
             </div>
           </div>
         </details>
@@ -548,10 +743,22 @@
 
           <label for="scrapPad">Workspace</label>
           <textarea id="scrapPad" placeholder="Example:
-Io (Ocean) = 8 × 1200 = 9600
-Ih (Ocean) = sqrt(9) × 500 × 2.33 = 3495
-Total inventory = 13095
-Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
+FE = Forecast - Actual = 100 - 110 = -10
+SE = (-10)^2 = 100
+AE = abs(-10) = 10
+
+ES:
+alpha = 0.8
+yt = 550
+ŷt = 500
+ŷt+1 = (0.8 × 550) + (0.2 × 500) = 540
+
+DES:
+alpha = 0.2
+yt = 510
+ŷt = 500
+T̂t = 5
+New smoothed demand = (0.2 × 510) + (0.8 × 500) + 5 = 507"></textarea>
 
           <div class="scrap-actions">
             <button type="button" onclick="insertLine()">New line</button>
@@ -561,22 +768,26 @@ Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
           </div>
 
           <div class="quick-buttons">
-            <button type="button" onclick="insertText('Io = L × mean = ')">Insert: Io</button>
-            <button type="button" onclick="insertText('Ih = sqrt(L + 1) × sd × z = ')">Insert: Ih</button>
-            <button type="button" onclick="insertText('Total inventory = Io + Ih = ')">Insert: Total inventory</button>
-            <button type="button" onclick="insertText('Holding cost per unit = h × (Io + Ih) / mean = ')">Insert: Holding cost</button>
-            <button type="button" onclick="insertText('Stockout probability = stockouts / total items = ')">Insert: Stockout probability</button>
-            <button type="button" onclick="insertText('In-stock probability = 1 − stockout probability = ')">Insert: In-stock probability</button>
-            <button type="button" onclick="insertText('Mean = ')">Insert: Mean</button>
-            <button type="button" onclick="insertText('z = ')">Insert: z</button>
+            <button type="button" onclick="insertText('FE = Forecast - Actual = ')">Insert: Forecast Error</button>
+            <button type="button" onclick="insertText('Squared Error = (FE)^2 = ')">Insert: Squared Error</button>
+            <button type="button" onclick="insertText('Absolute Error = abs(FE) = ')">Insert: Absolute Error</button>
+            <button type="button" onclick="insertText('MSE = sum of squared errors / n = ')">Insert: MSE</button>
+            <button type="button" onclick="insertText('MAE = sum of absolute errors / n = ')">Insert: MAE</button>
+            <button type="button" onclick="insertText('Naive forecast = last realized value = ')">Insert: Naive</button>
+            <button type="button" onclick="insertText('Moving average forecast = sum of last T values / T = ')">Insert: Moving Average</button>
+            <button type="button" onclick="insertText('ŷt+1 = (alpha × yt) + ((1 - alpha) × ŷt) = ')">Insert: ES</button>
+            <button type="button" onclick="insertText('New smoothed demand = (alpha × yt) + ((1 - alpha) × ŷt) + T̂t = ')">Insert: DES</button>
+            <button type="button" onclick="insertText('SI = average season demand / average total demand = ')">Insert: SI</button>
+            <button type="button" onclick="insertText('Seasonal forecast = smoothed base × SI = ')">Insert: Seasonal Forecast</button>
+            <button type="button" onclick="insertText('Forecast combination = sum of forecasts / n = ')">Insert: Combination</button>
           </div>
 
           <div class="subtle-box">
             Tip: keep final values on separate lines, for example:<br>
-            <span class="mono">Io = 9600</span><br>
-            <span class="mono">Ih = 3495</span><br>
-            <span class="mono">Total = 13095</span><br>
-            <span class="mono">Holding cost = 19.64</span>
+            <span class="mono">FE = -10</span><br>
+            <span class="mono">AE = 10</span><br>
+            <span class="mono">ES forecast = 540</span><br>
+            <span class="mono">Seasonal forecast = 90</span>
           </div>
         </div>
       </aside>
@@ -599,6 +810,7 @@ Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
   function resetAll() {
     clearExpr();
     resetStats();
+    resetForecasting();
     clearScrap();
   }
 
@@ -855,6 +1067,102 @@ Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
     setText("dataStatsResult", out);
   }
 
+  function runES() {
+    const alpha = parseNum("esAlpha");
+    const yt = parseNum("esActual");
+    const oldForecast = parseNum("esOldForecast");
+    const d = document.getElementById("esRound").value;
+
+    if (alpha === null || yt === null || oldForecast === null) {
+      setText("esResult", "Enter α, actual demand, and old forecast.");
+      return;
+    }
+    if (!(alpha >= 0 && alpha <= 1)) {
+      setText("esResult", "α must be between 0 and 1.");
+      return;
+    }
+
+    const nextForecast = (alpha * yt) + ((1 - alpha) * oldForecast);
+    const step1 = alpha * yt;
+    const step2 = (1 - alpha) * oldForecast;
+
+    setText(
+      "esResult",
+      `Next forecast = ${formatWith(d, nextForecast)}
+Step 1: α × yt = ${formatWith(d, step1)}
+Step 2: (1 − α) × ŷt = ${formatWith(d, step2)}`
+    );
+  }
+
+  function runDES() {
+    const alpha = parseNum("desAlpha");
+    const yt = parseNum("desActual");
+    const oldForecast = parseNum("desOldForecast");
+    const trend = parseNum("desTrend");
+    const d = document.getElementById("desRound").value;
+
+    if (alpha === null || yt === null || oldForecast === null || trend === null) {
+      setText("desResult", "Enter α, actual demand, old smoothed demand, and smoothed trend.");
+      return;
+    }
+    if (!(alpha >= 0 && alpha <= 1)) {
+      setText("desResult", "α must be between 0 and 1.");
+      return;
+    }
+
+    const step1 = alpha * yt;
+    const step2 = (1 - alpha) * oldForecast;
+    const newSmoothedDemand = step1 + step2 + trend;
+
+    setText(
+      "desResult",
+      `New smoothed demand = ${formatWith(d, newSmoothedDemand)}
+Step 1: α × yt = ${formatWith(d, step1)}
+Step 2: (1 − α) × ŷt = ${formatWith(d, step2)}
+Step 3: Add trend T̂t = ${formatWith(d, trend)}`
+    );
+  }
+
+  function runSeasonal() {
+    const base = parseNum("seasonBase");
+    const si = parseNum("seasonSI");
+    const d = document.getElementById("seasonRound").value;
+
+    if (base === null || si === null) {
+      setText("seasonResult", "Enter the smoothed base forecast and seasonality index.");
+      return;
+    }
+
+    const forecast = base * si;
+    setText(
+      "seasonResult",
+      `Seasonal forecast = ${formatWith(d, forecast)}
+Step: base × SI = ${formatWith(d, base)} × ${formatWith(d, si)}`
+    );
+  }
+
+  function runSI() {
+    const seasonDemand = parseNum("siSeasonDemand");
+    const totalDemand = parseNum("siTotalDemand");
+    const d = document.getElementById("siRound").value;
+
+    if (seasonDemand === null || totalDemand === null) {
+      setText("siResult", "Enter average season demand and average total demand.");
+      return;
+    }
+    if (totalDemand === 0) {
+      setText("siResult", "Average total demand cannot be 0.");
+      return;
+    }
+
+    const si = seasonDemand / totalDemand;
+    setText(
+      "siResult",
+      `SI = ${formatWith(d, si)}
+Step: average season demand / average total demand = ${formatWith(d, seasonDemand)} / ${formatWith(d, totalDemand)}`
+    );
+  }
+
   function resetStats() {
     document.getElementById("slInput").value = "";
     document.getElementById("roundStats1").value = "4";
@@ -872,6 +1180,31 @@ Holding cost = 1.80 × 13095 / 1200 = 19.64"></textarea>
 
     document.getElementById("dataList").value = "";
     setText("dataStatsResult", "-");
+  }
+
+  function resetForecasting() {
+    document.getElementById("esAlpha").value = "";
+    document.getElementById("esActual").value = "";
+    document.getElementById("esOldForecast").value = "";
+    document.getElementById("esRound").value = "2";
+    setText("esResult", "-");
+
+    document.getElementById("desAlpha").value = "";
+    document.getElementById("desActual").value = "";
+    document.getElementById("desOldForecast").value = "";
+    document.getElementById("desTrend").value = "";
+    document.getElementById("desRound").value = "2";
+    setText("desResult", "-");
+
+    document.getElementById("seasonBase").value = "";
+    document.getElementById("seasonSI").value = "";
+    document.getElementById("seasonRound").value = "2";
+    setText("seasonResult", "-");
+
+    document.getElementById("siSeasonDemand").value = "";
+    document.getElementById("siTotalDemand").value = "";
+    document.getElementById("siRound").value = "2";
+    setText("siResult", "-");
   }
 
   function getScrapPad() {
