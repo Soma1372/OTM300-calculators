@@ -40,6 +40,21 @@
     }
     button:hover { background: #eee; }
 
+    /* ===== CHANGED: link button style ===== */
+    .top-link-btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      background: #f7f7f7;
+      color: #000;
+      text-decoration: none;
+      font-size: 16px;
+      margin-bottom: 14px;
+    }
+    .top-link-btn:hover { background: #eee; }
+    /* ===== END CHANGED ===== */
+
     .row { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
     .result { font-size: 18px; font-weight: 700; padding: 10px; background: #fafafa; border: 1px dashed #bbb; border-radius: 8px; }
     .small { font-size: 13px; color: #555; }
@@ -166,6 +181,15 @@
 
 <body>
   <div class="container">
+    <!-- ===== CHANGED: link to second page added at top ===== -->
+    <a
+      href="https://soma1372.github.io/OTM300-calculators/SCM"
+      class="top-link-btn"
+    >
+      Go to Supply Chain Calculator
+    </a>
+    <!-- ===== END CHANGED ===== -->
+
     <h1>OTM 300 Calculators</h1>
     <p class="note"><strong>Exam note:</strong> You may use this entire page during the exam session. This page does not store data. Refreshing resets values.</p>
 
