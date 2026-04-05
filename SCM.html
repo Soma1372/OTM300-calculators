@@ -579,7 +579,7 @@
           <summary>10. Forecasting</summary>
           <div class="content">
             <div class="warn">
-              Simple Chapter 10 formulas are listed for the <strong>Enhanced General Calculator</strong>. More complicated Chapter 10 methods use input panels below.
+              Simple Chapter 10 formulas are listed for the <strong>Enhanced General Calculator</strong>. Additional Chapter 10 methods use the input panels below.
             </div>
 
             <div class="card">
@@ -635,58 +635,17 @@
             </div>
 
             <div class="card">
-              <h3 class="section-title">Trend Adjustment / Double Exponential Smoothing</h3>
-              <p class="small">Lecture setup: <span class="mono">New Smoothed Demand = (α × yt) + ((1 − α) × ŷt) + T̂t</span></p>
-
-              <div class="grid" style="margin-top: 12px;">
-                <div>
-                  <label for="desAlpha">α (alpha)</label>
-                  <input id="desAlpha" type="number" step="any" placeholder="e.g., 0.2">
-                </div>
-                <div>
-                  <label for="desActual">Actual demand (yt)</label>
-                  <input id="desActual" type="number" step="any" placeholder="e.g., 510">
-                </div>
-                <div>
-                  <label for="desOldForecast">Old smoothed demand (ŷt)</label>
-                  <input id="desOldForecast" type="number" step="any" placeholder="e.g., 500">
-                </div>
-                <div>
-                  <label for="desTrend">Smoothed trend (T̂t)</label>
-                  <input id="desTrend" type="number" step="any" placeholder="e.g., 5">
-                </div>
-                <div>
-                  <label for="desRound">Rounding</label>
-                  <select id="desRound">
-                    <option value="4">Round to 4 decimals</option>
-                    <option value="2" selected>Round to 2 decimals</option>
-                    <option value="0">Round to 0 decimals</option>
-                    <option value="6">Round to 6 decimals</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="row" style="margin-top: 12px;">
-                <button type="button" onclick="runDES()">Compute trend-adjusted forecast</button>
-              </div>
-
-              <div style="margin-top: 10px;">
-                <div class="small">Result</div>
-                <div class="result" id="desResult">-</div>
-              </div>
-            </div>
-
-            <div class="card">
               <h3 class="section-title">Seasonality Index</h3>
-              <p class="small">Formula: <span class="mono">SI = Average(Season Demand) / Average(Total Demand)</span></p>
+              <p class="small">Formula: <span class="mono">SI = Target Period Total Demand / Average Demand Across Total Time Periods</span></p>
+              <p class="small">Example: <span class="mono">SI = Total demand for a month / Average demand across all months in the year</span></p>
 
               <div class="grid" style="margin-top: 12px;">
                 <div>
-                  <label for="siSeasonDemand">Average season demand</label>
+                  <label for="siSeasonDemand">Target Period total demand (e.g., month)</label>
                   <input id="siSeasonDemand" type="number" step="any" placeholder="e.g., 90">
                 </div>
                 <div>
-                  <label for="siTotalDemand">Average total demand</label>
+                  <label for="siTotalDemand">Average demand across total time periods (e.g., year)</label>
                   <input id="siTotalDemand" type="number" step="any" placeholder="e.g., 100">
                 </div>
                 <div>
@@ -1324,41 +1283,21 @@ Order Quantity ="></textarea>
     setText("esResult", `Next forecast = ${formatWith(d, nextForecast)}`);
   }
 
-  function runDES() {
-    const alpha = parseNum("desAlpha");
-    const yt = parseNum("desActual");
-    const oldForecast = parseNum("desOldForecast");
-    const trend = parseNum("desTrend");
-    const d = document.getElementById("desRound").value;
-
-    if (alpha === null || yt === null || oldForecast === null || trend === null) {
-      setText("desResult", "Enter α, actual demand, old smoothed demand, and trend.");
-      return;
-    }
-    if (!(alpha >= 0 && alpha <= 1)) {
-      setText("desResult", "α must be between 0 and 1.");
-      return;
-    }
-
-    const newSmoothedDemand = (alpha * yt) + ((1 - alpha) * oldForecast) + trend;
-    setText("desResult", `New smoothed demand = ${formatWith(d, newSmoothedDemand)}`);
-  }
-
   function runSI() {
-    const seasonDemand = parseNum("siSeasonDemand");
-    const totalDemand = parseNum("siTotalDemand");
+    const targetPeriodDemand = parseNum("siSeasonDemand");
+    const averageTotalPeriodsDemand = parseNum("siTotalDemand");
     const d = document.getElementById("siRound").value;
 
-    if (seasonDemand === null || totalDemand === null) {
-      setText("siResult", "Enter average season demand and average total demand.");
+    if (targetPeriodDemand === null || averageTotalPeriodsDemand === null) {
+      setText("siResult", "Enter the target period total demand and the average demand across total time periods.");
       return;
     }
-    if (totalDemand === 0) {
-      setText("siResult", "Average total demand cannot be 0.");
+    if (averageTotalPeriodsDemand === 0) {
+      setText("siResult", "Average demand across total time periods cannot be 0.");
       return;
     }
 
-    const si = seasonDemand / totalDemand;
+    const si = targetPeriodDemand / averageTotalPeriodsDemand;
     setText("siResult", `SI = ${formatWith(d, si)}`);
   }
 
@@ -1552,7 +1491,6 @@ Order Quantity = ${format2(orderQty)}`
   function resetForecasting() {
     const ids = [
       "esAlpha", "esActual", "esOldForecast",
-      "desAlpha", "desActual", "desOldForecast", "desTrend",
       "siSeasonDemand", "siTotalDemand",
       "seasonBase", "seasonSI"
     ];
@@ -1563,12 +1501,10 @@ Order Quantity = ${format2(orderQty)}`
     });
 
     document.getElementById("esRound").value = "2";
-    document.getElementById("desRound").value = "2";
     document.getElementById("siRound").value = "2";
     document.getElementById("seasonRound").value = "2";
 
     setText("esResult", "-");
-    setText("desResult", "-");
     setText("siResult", "-");
     setText("seasonResult", "-");
   }
